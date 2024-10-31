@@ -1,3 +1,57 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --background-secondary: #f3f4f6;
+    --foreground: #111827;
+    --foreground-secondary: #4b5563;
+    --primary-600: #4f46e5;
+    --primary-700: #4338ca;
+  }
+
+  .dark {
+    --background: #111827;
+    --background-secondary: #1f2937;
+    --foreground: #f9fafb;
+    --foreground-secondary: #d1d5db;
+    --primary-600: #6366f1;
+    --primary-700: #4f46e5;
+  }
+}
+
+body {
+  @apply bg-background text-foreground transition-colors duration-200;
+}
+
+/* Phone Input Custom Styles */
+.react-tel-input .country-list {
+  @apply text-sm bg-white border border-gray-200 shadow-lg rounded-lg;
+}
+
+.react-tel-input .country-list .country {
+  @apply px-4 py-2 hover:bg-gray-50;
+}
+
+.react-tel-input .country-list .country.highlight {
+  @apply bg-indigo-50;
+}
+
+.react-tel-input .flag-dropdown {
+  @apply !border-0 !bg-transparent;
+}
+
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus {
+  @apply !bg-transparent;
+}
+
+.react-tel-input .country-list .search {
+  @apply !p-2 !m-0 !border !border-gray-200 !rounded-t-lg;
+}
+
+.react-tel-input .country-list .search-box {
+  @apply !text-sm !px-3 !py-2 !border !border-gray-300 !rounded-md !w-full;
+} 

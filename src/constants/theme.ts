@@ -1,21 +1,41 @@
 export const THEME = {
   colors: {
-    primary: '#6366F1',
-    secondary: '#4F46E5',
-    success: '#10B981',
-    danger: '#EF4444',
-    warning: '#F59E0B',
-    background: '#F9FAFB',
-    card: '#FFFFFF',
-    text: {
-      primary: '#111827',
-      secondary: '#4B5563',
-      light: '#9CA3AF'
-    }
+    primary: {
+      50: '#f0f9ff',
+      100: '#e0f2fe',
+      500: '#0ea5e9',
+      600: '#0284c7',
+      700: '#0369a1',
+    },
+    gray: {
+      50: '#f9fafb',
+      100: '#f3f4f6',
+      200: '#e5e7eb',
+      300: '#d1d5db',
+      400: '#9ca3af',
+      500: '#6b7280',
+      600: '#4b5563',
+      700: '#374151',
+      800: '#1f2937',
+      900: '#111827',
+    },
   },
-  shadows: {
-    sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-    md: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-    lg: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
-  }
-}; 
+  spacing: {
+    0: '0px',
+    1: '0.25rem',
+    2: '0.5rem',
+    4: '1rem',
+    6: '1.5rem',
+    8: '2rem',
+    12: '3rem',
+    16: '4rem',
+  },
+  borderRadius: {
+    sm: '0.125rem',
+    DEFAULT: '0.25rem',
+    md: '0.375rem',
+    lg: '0.5rem',
+    xl: '0.75rem',
+    '2xl': '1rem',
+  },
+} as const; 

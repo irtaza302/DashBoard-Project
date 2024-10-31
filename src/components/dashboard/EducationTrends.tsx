@@ -16,31 +16,38 @@ export const EducationTrends = ({ profiles }: { profiles: ProfileFormData[] }) =
   const chartData = Object.values(yearlyData).sort((a, b) => a.year - b.year);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-4">Graduation Trends</h2>
+    <div className="bg-background-secondary p-6 rounded-lg shadow">
+      <h2 className="text-lg font-semibold mb-4 text-foreground">Graduation Trends</h2>
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} />
             <XAxis 
               dataKey="year" 
               type="number"
               domain={['dataMin', 'dataMax']}
               tickFormatter={(value) => value.toString()}
+              stroke="currentColor"
             />
-            <YAxis />
+            <YAxis stroke="currentColor" />
             <Tooltip 
               formatter={(value) => [value, 'Graduates']}
               labelFormatter={(label) => `Year: ${label}`}
+              contentStyle={{ 
+                backgroundColor: 'var(--background)',
+                border: '1px solid var(--foreground-secondary)',
+                color: 'var(--foreground)'
+              }}
             />
             <Legend />
             <Line
               type="monotone"
               dataKey="count"
               name="Graduates"
-              stroke="#8884d8"
+              stroke="var(--primary-600)"
               strokeWidth={2}
-              dot={{ r: 4 }}
+              dot={{ r: 4, fill: 'var(--primary-600)' }}
+              activeDot={{ r: 6, fill: 'var(--primary-700)' }}
             />
           </LineChart>
         </ResponsiveContainer>

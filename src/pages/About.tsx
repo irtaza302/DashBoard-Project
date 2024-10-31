@@ -45,4 +45,6 @@ export const About: FC = () => {
       </div>
     </div>
   );
-}; 
+};
+
+export default About; 

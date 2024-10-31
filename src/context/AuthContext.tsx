@@ -1,40 +1,46 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthState } from '../types/routes.types';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {
-  auth: AuthState;
+  user: string | null;
+  isAuthenticated: boolean;
   login: (email: string) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const navigate = useNavigate();
-  const [auth, setAuth] = useState<AuthState>({
-    isAuthenticated: false,
-    user: null
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<string | null>(() => {
+    // Initialize from localStorage
+    return localStorage.getItem('user');
   });
 
+  const isAuthenticated = Boolean(user);
+
   const login = (email: string) => {
-    setAuth({
-      isAuthenticated: true,
-      user: { email }
-    });
-    navigate('/dashboard');
+    setUser(email);
+    localStorage.setItem('user', email);
   };
 
   const logout = () => {
-    setAuth({
-      isAuthenticated: false,
-      user: null
-    });
-    navigate('/login');
+    setUser(null);
+    localStorage.removeItem('user');
   };
 
+  // Optional: Handle storage events for multi-tab support
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        setUser(e.newValue);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ auth, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
