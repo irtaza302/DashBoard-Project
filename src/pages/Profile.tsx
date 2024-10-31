@@ -9,7 +9,7 @@ import { profileApi } from '../services/api';
 import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 import { ProfileForm } from '../components/profile/ProfileForm';
 
-export const Profile = () => {
+const Profile = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [profiles, setProfiles] = useState<ProfileFormData[]>([]);
@@ -105,12 +105,14 @@ export const Profile = () => {
     };
 
     return (
-        <div className="p-8 bg-gray-50 min-h-screen">
+        <div className="p-8 bg-background min-h-screen">
             {/* Header Section */}
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Profile Management</h1>
-                    <p className="mt-1 text-sm text-gray-500">Manage and update user profiles</p>
+                    <h1 className="text-3xl font-bold text-foreground">Profile Management</h1>
+                    <p className="mt-1 text-sm text-foreground-secondary">
+                        Manage and update user profiles
+                    </p>
                 </div>
                 <button
                     onClick={() => {
@@ -118,7 +120,7 @@ export const Profile = () => {
                         reset();
                         setIsOpen(true);
                     }}
-                    className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+                    className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 shadow-sm hover:shadow-md"
                 >
                     <PlusIcon className="w-5 h-5 mr-2" />
                     <span>{PROFILE_CONSTANTS.BUTTON_TEXT.ADD_PROFILE}</span>
@@ -126,7 +128,7 @@ export const Profile = () => {
             </div>
 
             {/* Table Section */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div className="bg-background-secondary rounded-xl shadow-sm border border-foreground/10">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
@@ -178,11 +180,11 @@ export const Profile = () => {
 
             {/* Modal Form */}
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
+                <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" aria-hidden="true" />
                 
                 <div className="fixed inset-0 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4">
-                        <Dialog.Panel className="mx-auto w-full max-w-2xl bg-white rounded-xl shadow-xl">
+                        <Dialog.Panel className="mx-auto w-full max-w-2xl bg-background-secondary rounded-xl shadow-xl">
                             <div className="px-6 py-4 border-b border-gray-200">
                                 <div className="flex items-center justify-between">
                                     <Dialog.Title className="text-xl font-semibold text-gray-900">
@@ -209,4 +211,6 @@ export const Profile = () => {
             </Dialog>
         </div>
     );
-}; 
+};
+
+export default Profile; 

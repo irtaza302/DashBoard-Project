@@ -6,13 +6,14 @@ import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { loginSchema } from '../../schemas/auth.schema';
 import { EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { LoadingSpinner } from '../common/LoadingSpinner';
 
 interface LoginFormData {
   email: string;
   password: string;
 }
 
-export const LoginForm = () => {
+const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +34,9 @@ export const LoginForm = () => {
       if (data.email && data.password) {
         login(data.email);
         toast.success('Login successful');
-        navigate(from, { replace: true });
+        setTimeout(() => {
+          navigate(from, { replace: true });
+        }, 100);
       } else {
         toast.error('Invalid credentials');
       }
@@ -135,13 +138,10 @@ export const LoginForm = () => {
                 className="w-full flex justify-center items-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors disabled:opacity-50"
               >
                 {isLoading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Signing in...
-                  </>
+                  <div className="flex items-center space-x-2">
+                    <LoadingSpinner size="sm" color="white" />
+                    <span>Signing in...</span>
+                  </div>
                 ) : (
                   'Sign in'
                 )}
@@ -161,4 +161,6 @@ export const LoginForm = () => {
       </div>
     </div>
   );
-}; 
+};
+
+export default LoginForm; 

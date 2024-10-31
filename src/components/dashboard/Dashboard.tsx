@@ -12,7 +12,7 @@ import { StatCard } from './StatCard';
 import { EducationTrends } from './EducationTrends';
 import { ProfileTimeline } from './ProfileTimeline';
 
-export const Dashboard = () => {
+const Dashboard = () => {
   const [profiles, setProfiles] = useState<ProfileFormData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -71,6 +71,7 @@ export const Dashboard = () => {
       trend: { value: 5, isPositive: true }
     }
   ];
+
   if (loading) {
     return <div className="flex items-center justify-center h-64">Loading...</div>;
   }
@@ -147,4 +148,6 @@ export const Dashboard = () => {
       <ProfileTimeline profiles={profiles} />
     </div>
   );
-}
+};
+
+export default Dashboard;

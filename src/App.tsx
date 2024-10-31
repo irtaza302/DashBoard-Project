@@ -1,53 +1,60 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { LoginForm } from './components/auth/LoginForm';
-import { DashboardLayout } from './components/layout/DashboardLayout';
-import { AuthProvider } from './context/AuthContext';
+import React, { Suspense } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { Dashboard } from './components/dashboard/Dashboard';
-import { Profile } from './pages/Profile';
-import { About } from './pages/About';
+import { AuthProvider } from './context/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import RequireAuth from './components/RequireAuth';
+import { PageLoader } from './components/common/PageLoader';
 
-const queryClient = new QueryClient();
+const DashboardLayout = React.lazy(() => import('./components/layout/DashboardLayout'));
+const LoginForm = React.lazy(() => import('./components/auth/LoginForm'));
+const Dashboard = React.lazy(() => import('./components/dashboard/Dashboard'));
+const Profile = React.lazy(() => import('./pages/Profile'));
+const About = React.lazy(() => import('./pages/About'));
 
-function RequireAuth({ children }: { children: JSX.Element }) {
-  const { auth } = useAuth();
-  const location = useLocation();
-
-  if (!auth.isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return children;
-}
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route
-              path="/"
-              element={
-                <RequireAuth>
-                  <DashboardLayout />
-                </RequireAuth>
-              }
-            >
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="about" element={<About />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-          <Toaster position="top-right" />
-        </AuthProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/login" element={<LoginForm />} />
+                  <Route
+                    path="/"
+                    element={
+                      <RequireAuth>
+                        <DashboardLayout />
+                      </RequireAuth>
+                    }
+                  >
+                    <Route index element={<Navigate to="/dashboard" replace />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="about" element={<About />} />
+                  </Route>
+                  <Route path="*" element={<Navigate to="/login" replace />} />
+                </Routes>
+              </Suspense>
+              <Toaster position="top-right" />
+            </AuthProvider>
+          </BrowserRouter>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
