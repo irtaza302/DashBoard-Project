@@ -4,20 +4,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
 import { profileSchema, type ProfileFormData } from '../schemas/profile.schema';
 import { Dialog } from '@headlessui/react';
-import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
-import { profileApi } from '../services/api';
+import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';;
 import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 import { ProfileForm } from '../components/profile/ProfileForm';
 import { formatDate } from '../utils/date';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { fetchProfiles, createProfile, updateProfile, deleteProfile } from '../store/slices/profileSlice';
 
 const Profile = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [profiles, setProfiles] = useState<ProfileFormData[]>([]);
     const [editingProfile, setEditingProfile] = useState<ProfileFormData | null>(null);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [profileToDelete, setProfileToDelete] = useState<ProfileFormData | null>(null);
+
+    const dispatch = useAppDispatch();
+    const { profiles} = useAppSelector(state => state.profile);
 
     const form = useForm<ProfileFormData>({
         resolver: zodResolver(profileSchema),
@@ -41,21 +44,11 @@ const Profile = () => {
 
     const {
         reset,
-        setValue
     } = form;
 
-    const fetchProfiles = async () => {
-        try {
-            const data = await profileApi.getAll();
-            setProfiles(data);
-        } catch {
-            toast.error(PROFILE_CONSTANTS.TOAST_MESSAGES.FETCH_ERROR);
-        }
-    };
-
     useEffect(() => {
-        fetchProfiles();
-    }, []);
+        dispatch(fetchProfiles());
+    }, [dispatch]);
 
     const handleEdit = (profile: ProfileFormData) => {
         setEditingProfile(profile);
@@ -91,17 +84,15 @@ const Profile = () => {
             };
 
             if (editingProfile?.id) {
-                await profileApi.update(editingProfile.id, formattedData);
+                await dispatch(updateProfile({ id: editingProfile.id, data: formattedData })).unwrap();
                 toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_SUCCESS);
             } else {
-                await profileApi.create(formattedData);
+                await dispatch(createProfile(formattedData)).unwrap();
                 toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_SUCCESS);
             }
 
-            await fetchProfiles();
             handleClose();
-        } catch (error) {
-            console.error('Form submission error:', error);
+        } catch {
             toast.error(editingProfile ? 
                 PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_ERROR : 
                 PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_ERROR
@@ -139,9 +130,8 @@ const Profile = () => {
         if (!profileToDelete?.id) return;
         
         try {
-            await profileApi.delete(profileToDelete.id);
+            await dispatch(deleteProfile(profileToDelete.id)).unwrap();
             toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_SUCCESS);
-            await fetchProfiles();
         } catch {
             toast.error(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_ERROR);
         } finally {

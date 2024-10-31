@@ -8,7 +8,6 @@ import { PhoneInputField } from '../common/PhoneInput';
 import { FORM_INPUTS } from '../../constants/form-inputs.constants';
 import { FORM_CONSTANTS } from '../../constants/form.constants';
 import { VALIDATION_FIELDS } from '../../constants/form-validation.constants';
-import { formatDate } from '../../utils/date';
 
 interface ProfileFormProps {
   form: UseFormReturn<ProfileFormData>;

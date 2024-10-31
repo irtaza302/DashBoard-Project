@@ -1,3 +1,7 @@
+import { ProfileFormData } from "@/schemas/profile.schema";
+
+import { formatDate } from "./date";
+
 export const validateFormData = (data: ProfileFormData): ProfileFormData => {
     return {
         ...data,

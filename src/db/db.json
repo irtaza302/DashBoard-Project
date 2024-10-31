@@ -119,6 +119,36 @@
       "studentCard": "STU2025008",
       "portfolio": "https://danielkim.data",
       "githubLink": "https://github.com/dkim"
+    },
+    {
+      "id": "9181",
+      "name": "Irtaza malik",
+      "email": "malikirtaza302@hotmail.com",
+      "contact": "923035737327",
+      "address": "House 312, Sector B1, Block 13, Township",
+      "education": {
+        "degree": "BSCD",
+        "completionYear": 2000
+      },
+      "studentCard": "2113123123",
+      "expiryDate": "2024-12-26T00:00:00.000Z",
+      "portfolio": "",
+      "githubLink": ""
+    },
+    {
+      "id": "bd48",
+      "name": "Irtaza malik",
+      "email": "malikirtaza302@hotmail.com",
+      "contact": "10201203012",
+      "address": "House 312, Sector B1, Block 13, Township",
+      "education": {
+        "degree": "BSCD",
+        "completionYear": 2024
+      },
+      "studentCard": "F2010232321",
+      "expiryDate": "2024-10-31T00:00:00.000Z",
+      "portfolio": "",
+      "githubLink": ""
     }
   ]
 }
