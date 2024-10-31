@@ -144,7 +144,7 @@ export const Dashboard = () => {
 
       {/* Full Width Charts */}
       <EducationTrends profiles={profiles} />
-      <ProfileTimeline profiles={profiles} />
+      <ProfileTimeline profiles={profiles} timelineData={timelineData} />
     </div>
   );
 }

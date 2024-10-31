@@ -16,15 +16,31 @@ export const Profile = () => {
     const [profiles, setProfiles] = useState<ProfileFormData[]>([]);
     const [editingProfile, setEditingProfile] = useState<ProfileFormData | null>(null);
 
+    const form = useForm<ProfileFormData>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: {
+            name: '',
+            email: '',
+            contact: '',
+            address: '',
+            education: {
+                degree: '',
+                completionYear: new Date().getFullYear()
+            },
+            expiryDate: new Date().toISOString().split('T')[0],
+            studentCard: '',
+            portfolio: '',
+            githubLink: ''
+        }
+    });
+
     const {
         register,
         handleSubmit,
         reset,
         setValue,
         formState: { errors }
-    } = useForm<ProfileFormData>({
-        resolver: zodResolver(profileSchema)
-    });
+    } = form;
 
     const fetchProfiles = async () => {
         try {
@@ -47,7 +63,7 @@ export const Profile = () => {
                 setValue('education.completionYear', value.completionYear);
             } else if (key === 'expiryDate') {
                 const dateValue = value instanceof Date ? value : new Date(value as string);
-                setValue(key, dateValue.toISOString().split('T')[0]);
+                setValue(key as keyof ProfileFormData, dateValue.toISOString().split('T')[0]);
             } else {
                 setValue(key as keyof ProfileFormData, value);
             }
@@ -75,11 +91,11 @@ export const Profile = () => {
                 toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_SUCCESS);
             }
 
-            setIsOpen(false);
+            await fetchProfiles();
             reset();
             setEditingProfile(null);
-            fetchProfiles();
-        } catch {
+            setIsOpen(false);
+        } catch (error) {
             toast.error(editingProfile ? PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_ERROR : PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_ERROR);
         } finally {
             setIsLoading(false);
@@ -185,7 +201,7 @@ export const Profile = () => {
                             </div>
                             
                             <ProfileForm
-                                form={{ register, handleSubmit, formState: { errors }, setValue }}
+                                form={form}
                                 onSubmit={onSubmit}
                                 isLoading={isLoading}
                                 onClose={handleClose}
