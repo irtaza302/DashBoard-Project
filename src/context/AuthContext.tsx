@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {
   user: string | null;
@@ -7,20 +6,35 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<string | null>(null);
-  const navigate = useNavigate();
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<string | null>(() => {
+    // Initialize from localStorage
+    return localStorage.getItem('user');
+  });
 
   const login = (email: string) => {
     setUser(email);
+    localStorage.setItem('user', email);
   };
 
   const logout = () => {
     setUser(null);
-    navigate('/login');
+    localStorage.removeItem('user');
   };
+
+  // Optional: Handle storage events for multi-tab support
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        setUser(e.newValue);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
@@ -31,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
