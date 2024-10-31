@@ -45,10 +45,16 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
           </AnimatePresence>
           <button
             onClick={onToggle}
-            className="p-2 rounded-lg hover:bg-background/80 text-foreground-secondary transition-colors duration-200"
+            className={`p-2 rounded-lg hover:bg-background/80 text-foreground-secondary transition-all duration-200 ${
+              !isOpen ? 'w-full flex justify-center' : ''
+            }`}
             aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
           >
-            {isOpen ? <ChevronLeftIcon className="w-5 h-5" /> : <ChevronRightIcon className="w-5 h-5" />}
+            {isOpen ? (
+              <ChevronLeftIcon className="w-5 h-5" />
+            ) : (
+              <ChevronRightIcon className="w-5 h-5 hover:scale-110 transition-transform" />
+            )}
           </button>
         </div>
 
@@ -61,6 +67,8 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
               onMouseEnter={() => setIsHovered(route.path)}
               onMouseLeave={() => setIsHovered(null)}
               className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 relative group ${
+                !isOpen ? 'justify-center' : ''
+              } ${
                 isActive(route.path)
                   ? 'bg-primary-600 text-white shadow-md'
                   : 'text-foreground-secondary hover:bg-background/80'
@@ -84,19 +92,13 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
                   </motion.span>
                 )}
               </AnimatePresence>
-              {isActive(route.path) && (
-                <motion.div
-                  layoutId="active-indicator"
-                  className="absolute inset-0 bg-primary-600 rounded-lg -z-10"
-                />
-              )}
             </Link>
           ))}
         </nav>
 
         {/* User Section */}
         <div className="border-t border-foreground/10 p-4">
-          <div className="flex items-center space-x-3">
+          <div className={`flex items-center ${!isOpen ? 'justify-center' : 'space-x-3'}`}>
             <UserCircleIcon className="w-8 h-8 text-foreground-secondary" />
             <AnimatePresence>
               {isOpen && (
@@ -115,7 +117,9 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
           </div>
           <button
             onClick={logout}
-            className="mt-4 w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+            className={`mt-4 w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 ${
+              !isOpen ? 'justify-center' : ''
+            }`}
           >
             <ArrowRightOnRectangleIcon className="w-5 h-5" />
             {isOpen && <span className="ml-3">Logout</span>}
@@ -124,4 +128,4 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
       </div>
     </motion.div>
   );
-}; 
+};
