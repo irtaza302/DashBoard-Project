@@ -18,6 +18,34 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
   const [currentStep, setCurrentStep] = useState(0);
   const { register, handleSubmit, formState: { errors }, trigger, control } = form;
 
+  const validateStep = async (step: number) => {
+    const fieldsToValidate = STEP_ORDER[step] === 'PERSONAL_INFO'
+      ? ['name', 'email', 'contact', 'address']
+      : STEP_ORDER[step] === 'EDUCATION'
+      ? ['education.degree', 'education.completionYear']
+      : STEP_ORDER[step] === 'ADDITIONAL_INFO'
+      ? ['studentCard', 'expiryDate']
+      : ['portfolio', 'githubLink'];
+
+    return await trigger(fieldsToValidate as Path<ProfileFormData>[]);
+  };
+
+  const canNavigateToStep = async (targetStep: number) => {
+    // Can always go back
+    if (targetStep < currentStep) return true;
+    
+    // Validate all steps up to the target
+    for (let step = currentStep; step < targetStep; step++) {
+      const isValid = await validateStep(step);
+      if (!isValid) return false;
+    }
+    return true;
+  };
+
+  const handleStepClick = (step: number) => {
+    setCurrentStep(step);
+  };
+
   const renderStep = () => {
     switch (STEP_ORDER[currentStep]) {
       case 'PERSONAL_INFO':
@@ -122,6 +150,8 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
         currentStep={currentStep}
         totalSteps={STEP_ORDER.length}
         titles={STEP_ORDER.map(step => PROFILE_STEPS[step].title)}
+        onStepClick={handleStepClick}
+        canNavigate={canNavigateToStep}
       />
       
       <div className="px-6 py-4">

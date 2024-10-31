@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {
   user: string | null;
+  isAuthenticated: boolean;
   login: (email: string) => void;
   logout: () => void;
 }
@@ -13,6 +14,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Initialize from localStorage
     return localStorage.getItem('user');
   });
+
+  const isAuthenticated = Boolean(user);
 
   const login = (email: string) => {
     setUser(email);
@@ -37,7 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
