@@ -6,7 +6,6 @@ import { profileSchema, type ProfileFormData } from '../schemas/profile.schema';
 import { Dialog } from '@headlessui/react';
 import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { profileApi } from '../services/api';
-import { FormInput } from '../components/common/FormInput';
 import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 import { ProfileForm } from '../components/profile/ProfileForm';
 
@@ -27,7 +26,7 @@ export const Profile = () => {
                 degree: '',
                 completionYear: new Date().getFullYear()
             },
-            expiryDate: new Date().toISOString().split('T')[0],
+            expiryDate: new Date(),
             studentCard: '',
             portfolio: '',
             githubLink: ''
@@ -35,11 +34,8 @@ export const Profile = () => {
     });
 
     const {
-        register,
-        handleSubmit,
         reset,
-        setValue,
-        formState: { errors }
+        setValue
     } = form;
 
     const fetchProfiles = async () => {
@@ -95,7 +91,7 @@ export const Profile = () => {
             reset();
             setEditingProfile(null);
             setIsOpen(false);
-        } catch (error) {
+        } catch {
             toast.error(editingProfile ? PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_ERROR : PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_ERROR);
         } finally {
             setIsLoading(false);
