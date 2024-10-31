@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, Path } from 'react-hook-form';
 import { ProfileFormData } from '../../schemas/profile.schema';
 import { PROFILE_STEPS, STEP_ORDER } from '../../constants/profile-steps.constants';
 import { StepIndicator } from '../common/StepIndicator';
@@ -15,7 +15,7 @@ interface ProfileFormProps {
 
 export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: ProfileFormProps) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const { register, handleSubmit, formState: { errors } } = form;
+  const { register, handleSubmit, formState: { errors }, trigger } = form;
 
   const renderStep = () => {
     switch (STEP_ORDER[currentStep]) {
@@ -46,7 +46,45 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
             />
           </div>
         );
-      // Add remaining steps...
+      case 'ADDITIONAL_INFO':
+        return (
+          <div className="grid grid-cols-2 gap-4">
+            <FormInput
+              label="Student Card Number"
+              name="studentCard"
+              register={register}
+              error={errors.studentCard}
+            />
+            <FormInput
+              label="Expiry Date"
+              name="expiryDate"
+              type="date"
+              register={register}
+              error={errors.expiryDate}
+            />
+          </div>
+        );
+      case 'PROFESSIONAL_LINKS':
+        return (
+          <div className="grid grid-cols-2 gap-4">
+            <FormInput
+              label="Portfolio URL"
+              name="portfolio"
+              type="url"
+              register={register}
+              error={errors.portfolio}
+              placeholder="https://your-portfolio.com"
+            />
+            <FormInput
+              label="GitHub Profile"
+              name="githubLink"
+              type="url"
+              register={register}
+              error={errors.githubLink}
+              placeholder="https://github.com/username"
+            />
+          </div>
+        );
       default:
         return null;
     }
@@ -54,8 +92,28 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
 
   const isLastStep = currentStep === STEP_ORDER.length - 1;
 
+  const handleNext = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    const fieldsToValidate = STEP_ORDER[currentStep] === 'PERSONAL_INFO' 
+      ? ['name', 'email', 'contact', 'address']
+      : STEP_ORDER[currentStep] === 'EDUCATION'
+      ? ['education.degree', 'education.completionYear']
+      : STEP_ORDER[currentStep] === 'ADDITIONAL_INFO'
+      ? ['studentCard', 'expiryDate']
+      : STEP_ORDER[currentStep] === 'PROFESSIONAL_LINKS'
+      ? ['portfolio', 'githubLink']
+      : [];
+
+    const isValid = await trigger(fieldsToValidate as Path<ProfileFormData>[]);
+    
+    if (isValid && !isLastStep) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <StepIndicator
         currentStep={currentStep}
         totalSteps={STEP_ORDER.length}
@@ -95,7 +153,7 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
           </button>
           <button
             type={isLastStep ? 'submit' : 'button'}
-            onClick={() => !isLastStep && setCurrentStep(prev => prev + 1)}
+            onClick={isLastStep ? undefined : handleNext}
             disabled={isLoading}
             className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
           >

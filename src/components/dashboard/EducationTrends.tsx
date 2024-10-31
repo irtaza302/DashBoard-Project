@@ -30,7 +30,7 @@ export const EducationTrends = ({ profiles }: { profiles: ProfileFormData[] }) =
             />
             <YAxis />
             <Tooltip 
-              formatter={(value, name) => [value, 'Graduates']}
+              formatter={(value) => [value, 'Graduates']}
               labelFormatter={(label) => `Year: ${label}`}
             />
             <Legend />

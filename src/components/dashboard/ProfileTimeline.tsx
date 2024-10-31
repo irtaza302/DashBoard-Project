@@ -1,6 +1,6 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ProfileFormData } from '../../schemas/profile.schema';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 
 export const ProfileTimeline = ({ profiles }: { profiles: ProfileFormData[] }) => {
   // Sort profiles by expiry date and create cumulative data
@@ -27,7 +27,7 @@ export const ProfileTimeline = ({ profiles }: { profiles: ProfileFormData[] }) =
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="date"
-              tickFormatter={(date) => format(date, 'MMM yyyy')}
+              tickFormatter={(date) => format(new Date(date), 'MMM yyyy')}
             />
             <YAxis />
             <Tooltip

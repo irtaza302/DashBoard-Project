@@ -1,9 +1,9 @@
-import { FieldError, UseFormRegister } from 'react-hook-form';
+import { FieldError, UseFormRegister, Path } from 'react-hook-form';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
 interface FormInputProps {
   label: string;
-  name: keyof ProfileFormData | `education.${string}`;
+  name: Path<ProfileFormData>;
   type?: string;
   register: UseFormRegister<ProfileFormData>;
   error?: FieldError;
@@ -26,7 +26,7 @@ export const FormInput = ({
       <div className="relative">
         <input
           type={type}
-          {...register(name as any)}
+          {...register(name)}
           className={`
             block w-full px-3 py-2 rounded-lg border
             ${error ? 'border-red-300' : 'border-gray-300'}

@@ -37,7 +37,8 @@ export const LoginForm = () => {
       } else {
         toast.error('Invalid credentials');
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('Login error:', error);
       toast.error('Login failed');
     } finally {
       setIsLoading(false);

@@ -1,3 +1,4 @@
+import React from 'react';
 import { HomeIcon, UserCircleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Route } from '../types/routes.types';
 

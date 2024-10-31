@@ -149,6 +149,51 @@
       "portfolio": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
       "githubLink": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
       "id": "8818"
+    },
+    {
+      "id": "7608",
+      "name": "Irtaza malik",
+      "email": "malikirtaza96@gmail.com",
+      "contact": "03032839928",
+      "address": "House 312, Sector B1, Block 13, Township",
+      "education": {
+        "degree": "BSDS",
+        "completionYear": 2023
+      },
+      "expiryDate": "2024-10-24T00:00:00.000Z",
+      "studentCard": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
+      "portfolio": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
+      "githubLink": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel"
+    },
+    {
+      "id": "5abe",
+      "name": "Irtaza Data Scientist Malik",
+      "email": "malikirtaza96@gmail.com",
+      "contact": "03032839928",
+      "address": "House 312, Sector B1, Block 13, Township, Lahore, 54770, Pakistan",
+      "education": {
+        "degree": "BS-CDS",
+        "completionYear": 2021
+      },
+      "expiryDate": "2024-10-16T00:00:00.000Z",
+      "studentCard": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
+      "portfolio": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
+      "githubLink": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel"
+    },
+    {
+      "id": "9e52",
+      "name": "Irtaza Data Scientist Malik",
+      "email": "malikirtaza96@gmail.com",
+      "contact": "03032839928",
+      "address": "House 312, Sector B1, Block 13, Township, Lahore, 54770, Pakistan",
+      "education": {
+        "degree": "BSDS",
+        "completionYear": 2024
+      },
+      "expiryDate": "2024-10-01T00:00:00.000Z",
+      "studentCard": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
+      "portfolio": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
+      "githubLink": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel"
     }
   ]
 }

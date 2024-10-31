@@ -6,7 +6,6 @@ import { profileSchema, type ProfileFormData } from '../schemas/profile.schema';
 import { Dialog } from '@headlessui/react';
 import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { profileApi } from '../services/api';
-import { FormInput } from '../components/common/FormInput';
 import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 import { ProfileForm } from '../components/profile/ProfileForm';
 
@@ -16,15 +15,28 @@ export const Profile = () => {
     const [profiles, setProfiles] = useState<ProfileFormData[]>([]);
     const [editingProfile, setEditingProfile] = useState<ProfileFormData | null>(null);
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        setValue,
-        formState: { errors }
-    } = useForm<ProfileFormData>({
-        resolver: zodResolver(profileSchema)
+    const form = useForm<ProfileFormData>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: {
+            name: '',
+            email: '',
+            contact: '',
+            address: '',
+            education: {
+                degree: '',
+                completionYear: new Date().getFullYear()
+            },
+            expiryDate: new Date(),
+            studentCard: '',
+            portfolio: '',
+            githubLink: ''
+        }
     });
+
+    const {
+        reset,
+        setValue
+    } = form;
 
     const fetchProfiles = async () => {
         try {
@@ -47,7 +59,7 @@ export const Profile = () => {
                 setValue('education.completionYear', value.completionYear);
             } else if (key === 'expiryDate') {
                 const dateValue = value instanceof Date ? value : new Date(value as string);
-                setValue(key, dateValue.toISOString().split('T')[0]);
+                setValue(key as keyof ProfileFormData, dateValue.toISOString().split('T')[0]);
             } else {
                 setValue(key as keyof ProfileFormData, value);
             }
@@ -75,10 +87,10 @@ export const Profile = () => {
                 toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_SUCCESS);
             }
 
-            setIsOpen(false);
+            await fetchProfiles();
             reset();
             setEditingProfile(null);
-            fetchProfiles();
+            setIsOpen(false);
         } catch {
             toast.error(editingProfile ? PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_ERROR : PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_ERROR);
         } finally {
@@ -185,7 +197,7 @@ export const Profile = () => {
                             </div>
                             
                             <ProfileForm
-                                form={{ register, handleSubmit, formState: { errors }, setValue }}
+                                form={form}
                                 onSubmit={onSubmit}
                                 isLoading={isLoading}
                                 onClose={handleClose}
