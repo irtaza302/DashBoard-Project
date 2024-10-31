@@ -1,26 +1,23 @@
 import { z } from 'zod';
+import { INPUT_CONSTANTS } from '../constants/input.constants';
+
+const { VALIDATION } = INPUT_CONSTANTS;
 
 export const profileSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email format'),
-  contact: z.string()
-    .min(6, 'Phone number is required')
-    .refine((value) => {
-      // Remove all non-digit characters
-      const digitsOnly = value.replace(/\D/g, '');
-      return digitsOnly.length >= 6 && digitsOnly.length <= 15;
-    }, 'Phone number must be between 6 and 15 digits'),
-  address: z.string().min(1, 'Address is required'),
+  name: z.string().min(1, VALIDATION.MESSAGES.REQUIRED),
+  email: z.string().email(VALIDATION.MESSAGES.EMAIL),
+  contact: z.string().regex(VALIDATION.PATTERNS.PHONE, VALIDATION.MESSAGES.PHONE),
+  address: z.string().min(1, VALIDATION.MESSAGES.REQUIRED),
   education: z.object({
-    degree: z.string().min(1, 'Degree is required'),
-    completionYear: z.string().or(z.number()).pipe(
-      z.coerce.number().min(1900, 'Invalid year').max(new Date().getFullYear(), 'Year cannot be in the future')
-    )
+    degree: z.string().min(1, VALIDATION.MESSAGES.REQUIRED),
+    completionYear: z.coerce.number()
+      .min(VALIDATION.LIMITS.YEAR.MIN)
+      .max(VALIDATION.LIMITS.YEAR.MAX)
   }),
-  expiryDate: z.coerce.date(),
-  studentCard: z.string().url('Invalid URL'),
-  portfolio: z.string().url('Invalid URL'),
-  githubLink: z.string().url('Invalid URL')
+  studentCard: z.string().min(1, VALIDATION.MESSAGES.REQUIRED),
+  expiryDate: z.string().min(1, VALIDATION.MESSAGES.REQUIRED),
+  portfolio: z.string().url(VALIDATION.MESSAGES.URL).optional().or(z.literal('')),
+  githubLink: z.string().url(VALIDATION.MESSAGES.URL).optional().or(z.literal(''))
 });
 
 export type ProfileFormData = z.infer<typeof profileSchema> & {

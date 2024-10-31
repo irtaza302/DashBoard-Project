@@ -1,10 +1,14 @@
-import { useState } from 'react';
-import { UseFormReturn, Path } from 'react-hook-form';
+import { useState, useEffect } from 'react';
+import { UseFormReturn} from 'react-hook-form';
 import { ProfileFormData } from '../../schemas/profile.schema';
 import { PROFILE_STEPS, STEP_ORDER } from '../../constants/profile-steps.constants';
 import { StepIndicator } from '../common/StepIndicator';
 import { FormInput } from '../common/FormInput';
 import { PhoneInputField } from '../common/PhoneInput';
+import { FORM_INPUTS } from '../../constants/form-inputs.constants';
+import { FORM_CONSTANTS } from '../../constants/form.constants';
+import { VALIDATION_FIELDS } from '../../constants/form-validation.constants';
+import { formatDate } from '../../utils/date';
 
 interface ProfileFormProps {
   form: UseFormReturn<ProfileFormData>;
@@ -19,15 +23,9 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
   const { register, handleSubmit, formState: { errors }, trigger, control } = form;
 
   const validateStep = async (step: number) => {
-    const fieldsToValidate = STEP_ORDER[step] === 'PERSONAL_INFO'
-      ? ['name', 'email', 'contact', 'address']
-      : STEP_ORDER[step] === 'EDUCATION'
-      ? ['education.degree', 'education.completionYear']
-      : STEP_ORDER[step] === 'ADDITIONAL_INFO'
-      ? ['studentCard', 'expiryDate']
-      : ['portfolio', 'githubLink'];
-
-    return await trigger(fieldsToValidate as Path<ProfileFormData>[]);
+    const currentStepKey = STEP_ORDER[step];
+    const fieldsToValidate = VALIDATION_FIELDS[currentStepKey];
+    return await trigger(fieldsToValidate);
   };
 
   const canNavigateToStep = async (targetStep: number) => {
@@ -42,37 +40,66 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
     return true;
   };
 
-  const handleStepClick = (step: number) => {
-    setCurrentStep(step);
+  const handleStepClick = async (step: number) => {
+    const canNavigate = await canNavigateToStep(step);
+    if (canNavigate) {
+      // Save current step data
+      const currentData = form.getValues();
+      setCurrentStep(step);
+      // Restore form data after step change
+      form.reset(currentData, { keepDefaultValues: true });
+    }
   };
 
   const renderStep = () => {
+    const { LABELS, PLACEHOLDERS } = FORM_INPUTS;
+    
     switch (STEP_ORDER[currentStep]) {
       case 'PERSONAL_INFO':
         return (
-          <div className="grid grid-cols-2 gap-4">
-            <FormInput label="Name" name="name" register={register} error={errors.name} />
-            <FormInput label="Email" name="email" type="email" register={register} error={errors.email} />
+          <div className={FORM_CONSTANTS.LAYOUT.GRID}>
+            <FormInput 
+              label={LABELS.PERSONAL_INFO.NAME} 
+              name="name" 
+              type="TEXT"
+              register={register} 
+              error={errors.name} 
+            />
+            <FormInput 
+              label={LABELS.PERSONAL_INFO.EMAIL} 
+              name="email" 
+              type="EMAIL"
+              register={register} 
+              error={errors.email}
+              placeholder={PLACEHOLDERS.EMAIL}
+            />
             <PhoneInputField 
               control={control} 
               error={errors.contact?.message}
             />
-            <FormInput label="Address" name="address" register={register} error={errors.address} />
+            <FormInput 
+              label={LABELS.PERSONAL_INFO.ADDRESS} 
+              name="address" 
+              type="TEXT"
+              register={register} 
+              error={errors.address} 
+            />
           </div>
         );
       case 'EDUCATION':
         return (
-          <div className="grid grid-cols-2 gap-4">
+          <div className={FORM_CONSTANTS.LAYOUT.GRID}>
             <FormInput
-              label="Degree"
+              label={LABELS.EDUCATION.DEGREE}
               name="education.degree"
+              type="TEXT"
               register={register}
               error={errors.education?.degree}
             />
             <FormInput
-              label="Completion Year"
+              label={LABELS.EDUCATION.COMPLETION_YEAR}
               name="education.completionYear"
-              type="number"
+              type="NUMBER"
               register={register}
               error={errors.education?.completionYear}
             />
@@ -80,17 +107,18 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
         );
       case 'ADDITIONAL_INFO':
         return (
-          <div className="grid grid-cols-2 gap-4">
+          <div className={FORM_CONSTANTS.LAYOUT.GRID}>
             <FormInput
-              label="Student Card Number"
+              label={LABELS.ADDITIONAL_INFO.STUDENT_CARD}
               name="studentCard"
+              type="TEXT"
               register={register}
               error={errors.studentCard}
             />
             <FormInput
-              label="Expiry Date"
+              label={LABELS.ADDITIONAL_INFO.EXPIRY_DATE}
               name="expiryDate"
-              type="date"
+              type="DATE"
               register={register}
               error={errors.expiryDate}
             />
@@ -98,22 +126,22 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
         );
       case 'PROFESSIONAL_LINKS':
         return (
-          <div className="grid grid-cols-2 gap-4">
+          <div className={FORM_CONSTANTS.LAYOUT.GRID}>
             <FormInput
-              label="Portfolio URL"
+              label={LABELS.PROFESSIONAL_LINKS.PORTFOLIO}
               name="portfolio"
-              type="url"
+              type="URL"
               register={register}
               error={errors.portfolio}
-              placeholder="https://your-portfolio.com"
+              placeholder={PLACEHOLDERS.PORTFOLIO}
             />
             <FormInput
-              label="GitHub Profile"
+              label={LABELS.PROFESSIONAL_LINKS.GITHUB}
               name="githubLink"
-              type="url"
+              type="URL"
               register={register}
               error={errors.githubLink}
-              placeholder="https://github.com/username"
+              placeholder={PLACEHOLDERS.GITHUB}
             />
           </div>
         );
@@ -124,28 +152,46 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
 
   const isLastStep = currentStep === STEP_ORDER.length - 1;
 
-  const handleNext = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    
-    const fieldsToValidate = STEP_ORDER[currentStep] === 'PERSONAL_INFO' 
-      ? ['name', 'email', 'contact', 'address']
-      : STEP_ORDER[currentStep] === 'EDUCATION'
-      ? ['education.degree', 'education.completionYear']
-      : STEP_ORDER[currentStep] === 'ADDITIONAL_INFO'
-      ? ['studentCard', 'expiryDate']
-      : STEP_ORDER[currentStep] === 'PROFESSIONAL_LINKS'
-      ? ['portfolio', 'githubLink']
-      : [];
-
-    const isValid = await trigger(fieldsToValidate as Path<ProfileFormData>[]);
-    
-    if (isValid && !isLastStep) {
+  const handleNext = async () => {
+    const isValid = await validateStep(currentStep);
+    if (isValid && currentStep < STEP_ORDER.length - 1) {
+      const currentData = form.getValues();
       setCurrentStep(prev => prev + 1);
+      form.reset(currentData, { keepDefaultValues: true });
     }
   };
 
+  const onFormSubmit = handleSubmit(async (data) => {
+    const isValid = await validateStep(currentStep);
+    if (isValid && isLastStep) {
+      try {
+        const formattedData = {
+          ...data,
+          education: {
+            ...data.education,
+            completionYear: Number(data.education.completionYear)
+          },
+          expiryDate: data.expiryDate,
+          portfolio: data.portfolio || '',
+          githubLink: data.githubLink || ''
+        };
+        await onSubmit(formattedData);
+      } catch (error) {
+        console.error('Form submission error:', error);
+      }
+    } else {
+      handleNext();
+    }
+  });
+
+  useEffect(() => {
+    return () => {
+      form.reset();
+    };
+  }, [form]);
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={onFormSubmit} className="space-y-6">
       <StepIndicator
         currentStep={currentStep}
         totalSteps={STEP_ORDER.length}
@@ -186,8 +232,8 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
             Cancel
           </button>
           <button
-            type={isLastStep ? 'submit' : 'button'}
-            onClick={isLastStep ? undefined : handleNext}
+            type="button"
+            onClick={isLastStep ? onFormSubmit : handleNext}
             disabled={isLoading}
             className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
           >

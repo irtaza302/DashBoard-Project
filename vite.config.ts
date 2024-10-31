@@ -27,6 +27,9 @@ export default defineConfig({
       ]
     }
   })],
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
   build: {
     sourcemap: true,
     rollupOptions: {

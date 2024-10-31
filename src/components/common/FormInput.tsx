@@ -1,67 +1,52 @@
-import { FieldError, UseFormRegister, Path } from 'react-hook-form';
+import { UseFormRegister, Path, FieldError } from 'react-hook-form';
 import { ProfileFormData } from '../../schemas/profile.schema';
+import { FORM_INPUTS, type InputType } from '../../constants/form-inputs.constants';
 
 interface FormInputProps {
   label: string;
   name: Path<ProfileFormData>;
-  type?: string;
+  type?: InputType;
   register: UseFormRegister<ProfileFormData>;
   error?: FieldError;
   placeholder?: string;
-  pattern?: string;
+  icon?: React.ReactNode;
+  className?: string;
 }
 
 export const FormInput = ({
   label,
   name,
-  type = 'text',
+  type = 'TEXT',
   register,
   error,
   placeholder,
-  pattern
+  icon,
+  className
 }: FormInputProps) => {
-  const isPhoneInput = name === 'contact';
-
   return (
-    <div className="w-full">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+    <div className={className}>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
         {label}
-        {isPhoneInput && (
-          <span className="text-xs text-gray-500 ml-1">
-            (Format: +[country code][number])
-          </span>
-        )}
       </label>
       <div className="relative">
+        {icon && (
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            {icon}
+          </div>
+        )}
         <input
-          type={type}
+          type={FORM_INPUTS.TYPES[type]}
           {...register(name)}
           className={`
             block w-full px-3 py-2 rounded-lg border
             ${error ? 'border-red-300' : 'border-gray-300'}
+            ${icon ? 'pl-10' : ''}
             focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500
-            transition-colors duration-200
-            placeholder:text-gray-400 text-gray-900 text-sm
           `}
-          placeholder={isPhoneInput ? '+1234567890' : placeholder}
-          pattern={pattern}
+          placeholder={placeholder}
         />
-        {error && (
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-            <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-          </div>
-        )}
       </div>
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error.message}</p>
-      )}
-      {isPhoneInput && !error && (
-        <p className="mt-1 text-xs text-gray-500">
-          Example: +1 for USA, +44 for UK, +86 for China
-        </p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-500">{error.message}</p>}
     </div>
   );
 }; 

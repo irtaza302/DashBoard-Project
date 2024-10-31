@@ -11,8 +11,8 @@ import { PageLoader } from './components/common/PageLoader';
 const DashboardLayout = React.lazy(() => import('./components/layout/DashboardLayout'));
 const LoginForm = React.lazy(() => import('./components/auth/LoginForm'));
 const Dashboard = React.lazy(() => import('./components/dashboard/Dashboard'));
-const Profile = React.lazy(() => import('./pages/Profile'));
 const About = React.lazy(() => import('./pages/About'));
+const Profile = React.lazy(() => import('./pages/Profile'));
 
 const queryClient = new QueryClient({
   defaultOptions: {

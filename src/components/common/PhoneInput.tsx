@@ -3,6 +3,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { ProfileFormData } from '../../schemas/profile.schema';
 import type { Control } from 'react-hook-form';
+import { FORM_INPUTS } from '../../constants/form-inputs.constants';
 
 interface PhoneInputFieldProps {
   control: Control<ProfileFormData>;
@@ -13,16 +14,17 @@ export const PhoneInputField = ({ control, error }: PhoneInputFieldProps) => {
   return (
     <div className="w-full">
       <label className="block text-sm font-medium text-gray-700 mb-1">
-        Contact Number
+        {FORM_INPUTS.LABELS.PERSONAL_INFO.CONTACT}
       </label>
       <Controller
         name="contact"
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({ field }) => (
           <PhoneInput
             country={'us'}
-            value={value || ''}
-            onChange={(phone) => onChange(phone)}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
             inputClass={`
               !w-full !h-10 !pl-12 !pr-3 !py-2 !rounded-lg !border
               ${error ? '!border-red-300' : '!border-gray-300'}

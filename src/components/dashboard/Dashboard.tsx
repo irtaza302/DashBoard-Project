@@ -3,7 +3,6 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell
 } from 'recharts';
-import { format } from 'date-fns';
 import { profileApi } from '../../services/api';
 import { ProfileFormData } from '../../schemas/profile.schema';
 import { COLORS } from '../../constants/colors';
@@ -39,11 +38,6 @@ const Dashboard = () => {
   const pieData = Object.entries(degreeDistribution).map(([name, value]) => ({
     name,
     value,
-  }));
-
-  const timelineData = profiles.map(profile => ({
-    date: format(new Date(profile.expiryDate), 'MMM yyyy'),
-    count: 1,
   }));
 
   const stats = [
