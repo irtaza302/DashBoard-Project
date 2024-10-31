@@ -8,6 +8,7 @@ interface FormInputProps {
   register: UseFormRegister<ProfileFormData>;
   error?: FieldError;
   placeholder?: string;
+  pattern?: string;
 }
 
 export const FormInput = ({
@@ -16,12 +17,20 @@ export const FormInput = ({
   type = 'text',
   register,
   error,
-  placeholder
+  placeholder,
+  pattern
 }: FormInputProps) => {
+  const isPhoneInput = name === 'contact';
+
   return (
     <div className="w-full">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
         {label}
+        {isPhoneInput && (
+          <span className="text-xs text-gray-500 ml-1">
+            (Format: +[country code][number])
+          </span>
+        )}
       </label>
       <div className="relative">
         <input
@@ -34,7 +43,8 @@ export const FormInput = ({
             transition-colors duration-200
             placeholder:text-gray-400 text-gray-900 text-sm
           `}
-          placeholder={placeholder}
+          placeholder={isPhoneInput ? '+1234567890' : placeholder}
+          pattern={pattern}
         />
         {error && (
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -46,6 +56,11 @@ export const FormInput = ({
       </div>
       {error && (
         <p className="mt-1 text-sm text-red-600">{error.message}</p>
+      )}
+      {isPhoneInput && !error && (
+        <p className="mt-1 text-xs text-gray-500">
+          Example: +1 for USA, +44 for UK, +86 for China
+        </p>
       )}
     </div>
   );

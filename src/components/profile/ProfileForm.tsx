@@ -4,6 +4,7 @@ import { ProfileFormData } from '../../schemas/profile.schema';
 import { PROFILE_STEPS, STEP_ORDER } from '../../constants/profile-steps.constants';
 import { StepIndicator } from '../common/StepIndicator';
 import { FormInput } from '../common/FormInput';
+import { PhoneInputField } from '../common/PhoneInput';
 
 interface ProfileFormProps {
   form: UseFormReturn<ProfileFormData>;
@@ -15,7 +16,7 @@ interface ProfileFormProps {
 
 export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: ProfileFormProps) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const { register, handleSubmit, formState: { errors }, trigger } = form;
+  const { register, handleSubmit, formState: { errors }, trigger, control } = form;
 
   const renderStep = () => {
     switch (STEP_ORDER[currentStep]) {
@@ -24,7 +25,10 @@ export const ProfileForm = ({ form, onSubmit, isLoading, onClose, isEditing }: P
           <div className="grid grid-cols-2 gap-4">
             <FormInput label="Name" name="name" register={register} error={errors.name} />
             <FormInput label="Email" name="email" type="email" register={register} error={errors.email} />
-            <FormInput label="Contact" name="contact" register={register} error={errors.contact} />
+            <PhoneInputField 
+              control={control} 
+              error={errors.contact?.message}
+            />
             <FormInput label="Address" name="address" register={register} error={errors.address} />
           </div>
         );
