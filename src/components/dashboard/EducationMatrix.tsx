@@ -42,7 +42,17 @@ export const EducationMatrix = ({ profiles }: EducationMatrixProps) => {
               type="category"
               name="Degree"
               width={150}
-              tick={{ angle: -45, textAnchor: 'end' }}
+              tick={(props) => (
+                <text
+                  {...props}
+                  textAnchor="end"
+                  transform={`rotate(-45 ${props.x} ${props.y})`}
+                  dy={-2}
+                  dx={-10}
+                >
+                  {props.payload.value}
+                </text>
+              )}
             />
             <ZAxis 
               dataKey="count" 
@@ -63,10 +73,10 @@ export const EducationMatrix = ({ profiles }: EducationMatrixProps) => {
               }}
             />
             <Scatter data={matrixData} shape="circle">
-              {matrixData.map((entry, index) => (
+              {matrixData.map((_, index) => (
                 <Cell 
                   key={`cell-${index}`} 
-                  fill={degreeColorMap[entry.degree]}
+                  fill={degreeColorMap[matrixData[index].degree]}
                 />
               ))}
             </Scatter>
