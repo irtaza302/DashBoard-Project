@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc --build && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server --watch src/db/db.json --port 5000"
+    "server": "json-server --watch src/db/db.json --port 5000",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
