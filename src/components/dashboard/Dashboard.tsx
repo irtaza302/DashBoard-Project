@@ -12,6 +12,14 @@ import { EducationTrends } from './EducationTrends';
 import { ProfileTimeline } from './ProfileTimeline';
 import { EducationMatrix } from './EducationMatrix';
 
+interface CustomLabelProps {
+  name: string;
+  percent: number;
+}
+
+const CustomLabel = ({ name, percent }: CustomLabelProps) => 
+  `${name} ${(percent * 100).toFixed(0)}%`;
+
 const Dashboard = () => {
   const dispatch = useAppDispatch();
   const { profiles, loading } = useAppSelector(state => state.profile);
@@ -118,7 +126,7 @@ const Dashboard = () => {
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={CustomLabel}
                 >
                   {pieData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
