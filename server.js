@@ -96,11 +96,13 @@ app.put('/api/profiles/:id', async (req, res) => {
     const updatedProfile = await Profile.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      { new: true, runValidators: true }
     );
+    
     if (!updatedProfile) {
       return res.status(404).json({ error: 'Profile not found' });
     }
+    
     res.json(updatedProfile);
   } catch (error) {
     console.error('Profile update error:', error);

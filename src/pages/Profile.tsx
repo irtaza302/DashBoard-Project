@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
@@ -18,6 +18,9 @@ const Profile = () => {
     const [editingProfile, setEditingProfile] = useState<ProfileFormData | null>(null);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [profileToDelete, setProfileToDelete] = useState<ProfileFormData | null>(null);
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState('');
+    const [pageSize] = useState(10);
 
     const dispatch = useAppDispatch();
     const { profiles} = useAppSelector(state => state.profile);
@@ -83,11 +86,22 @@ const Profile = () => {
                 githubLink: data.githubLink || ''
             };
 
-            if (editingProfile?.id) {
-                await dispatch(updateProfile({ id: editingProfile.id, data: formattedData })).unwrap();
+            console.log('Submitting profile:', {
+                isEditing: !!editingProfile?._id,
+                profileId: editingProfile?._id,
+                formData: formattedData
+            });
+
+            if (editingProfile?._id) {
+                const result = await dispatch(updateProfile({ 
+                    id: editingProfile._id, 
+                    data: formattedData 
+                })).unwrap();
+                console.log('Update result:', result);
                 toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_SUCCESS);
             } else {
-                await dispatch(createProfile(formattedData)).unwrap();
+                const result = await dispatch(createProfile(formattedData)).unwrap();
+                console.log('Create result:', result);
                 toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_SUCCESS);
             }
 
@@ -147,6 +161,19 @@ const Profile = () => {
         }
     };
 
+    const filteredProfiles = useMemo(() => {
+        return profiles.filter(profile => 
+            profile.name.toLowerCase().includes(search.toLowerCase()) ||
+            profile.email.toLowerCase().includes(search.toLowerCase()) ||
+            profile.education.degree.toLowerCase().includes(search.toLowerCase())
+        );
+    }, [profiles, search]);
+
+    const paginatedProfiles = useMemo(() => {
+        const start = (page - 1) * pageSize;
+        return filteredProfiles.slice(start, start + pageSize);
+    }, [filteredProfiles, page, pageSize]);
+
     return (
         <div className="p-8 bg-background min-h-screen">
             {/* Header Section */}
@@ -184,7 +211,7 @@ const Profile = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            {profiles.map((profile) => (
+                            {paginatedProfiles.map((profile) => (
                                 <tr key={profile._id} className="hover:bg-gray-50 transition-colors duration-150">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{profile.name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{profile.email}</td>
@@ -253,6 +280,34 @@ const Profile = () => {
                 message="Are you sure you want to delete this profile? This action cannot be undone."
                 isLoading={isLoading}
             />
+
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Search profiles..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="px-4 py-2 border rounded-lg"
+                />
+            </div>
+
+            <div className="mt-4 flex justify-between items-center">
+                <button
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-4 py-2 bg-gray-100 rounded-lg disabled:opacity-50"
+                >
+                    Previous
+                </button>
+                <span>Page {page} of {Math.ceil(filteredProfiles.length / pageSize)}</span>
+                <button
+                    onClick={() => setPage(p => p + 1)}
+                    disabled={page >= Math.ceil(filteredProfiles.length / pageSize)}
+                    className="px-4 py-2 bg-gray-100 rounded-lg disabled:opacity-50"
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 };

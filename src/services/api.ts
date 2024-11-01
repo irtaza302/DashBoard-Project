@@ -1,10 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { ProfileFormData } from '../schemas/profile.schema';
+import { toast } from 'react-hot-toast';
 import { API_CONFIG } from '../config/api.config';
 
 // Get the base URL based on environment
 const baseURL = process.env.NODE_ENV === 'production' 
-  ? '' // Empty string for production (will use relative paths)
+  ? '/api' // Use relative path for production
   : 'http://localhost:5000';
 
 const api = axios.create({
@@ -28,19 +29,24 @@ api.interceptors.request.use(
 // Add response interceptor for error handling
 api.interceptors.response.use(
   response => response,
-  error => {
-    console.error('API Error:', error);
-    if (error.code === 'ECONNABORTED') {
-      throw new Error('Request timeout - please try again');
+  (error: AxiosError) => {
+    if (error.response?.status === 404) {
+      toast.error('Resource not found');
+    } else if (error.response?.status === 500) {
+      toast.error('Server error occurred');
+    } else if (error.code === 'ECONNABORTED') {
+      toast.error('Request timed out');
+    } else {
+      toast.error('An unexpected error occurred');
     }
-    throw error;
+    return Promise.reject(error);
   }
 );
 
 export const profileApi = {
-  create: async (data: Omit<ProfileFormData, 'id' | '_id'>) => {
+  create: async (data: Omit<ProfileFormData, 'id' | '_id'>): Promise<ProfileFormData> => {
     try {
-      const response = await api.post('/api/profiles', data);
+      const response = await api.post<ProfileFormData>('/api/profiles', data);
       return response.data;
     } catch (error) {
       console.error('Create Profile Error:', error);
@@ -50,7 +56,7 @@ export const profileApi = {
   
   getAll: async (): Promise<ProfileFormData[]> => {
     try {
-      const response = await api.get('/api/profiles');
+      const response = await api.get<ProfileFormData[]>('/api/profiles');
       return response.data;
     } catch (error) {
       console.error('Get Profiles Error:', error);
@@ -58,9 +64,9 @@ export const profileApi = {
     }
   },
   
-  update: async (id: string, data: Partial<Omit<ProfileFormData, 'id' | '_id'>>) => {
+  update: async (id: string, data: Partial<Omit<ProfileFormData, 'id' | '_id'>>): Promise<ProfileFormData> => {
     try {
-      const response = await api.put(`/api/profiles/${id}`, data);
+      const response = await api.put<ProfileFormData>(`/api/profiles/${id}`, data);
       return response.data;
     } catch (error) {
       console.error('Update Profile Error:', error);
@@ -68,7 +74,7 @@ export const profileApi = {
     }
   },
   
-  delete: async (id: string) => {
+  delete: async (id: string): Promise<void> => {
     try {
       await api.delete(`/api/profiles/${id}`);
     } catch (error) {

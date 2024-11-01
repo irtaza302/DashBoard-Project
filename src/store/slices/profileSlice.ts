@@ -24,7 +24,7 @@ export const fetchProfiles = createAsyncThunk(
 
 export const createProfile = createAsyncThunk(
   'profile/createProfile',
-  async (profile: Omit<ProfileFormData, 'id'>) => {
+  async (profile: Omit<ProfileFormData, 'id' | '_id'>) => {
     const response = await profileApi.create(profile);
     return response;
   }
@@ -32,7 +32,7 @@ export const createProfile = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
   'profile/updateProfile',
-  async ({ id, data }: { id: string; data: Omit<ProfileFormData, 'id'> }) => {
+  async ({ id, data }: { id: string; data: Partial<Omit<ProfileFormData, 'id' | '_id'>> }) => {
     const response = await profileApi.update(id, data);
     return response;
   }
@@ -68,7 +68,7 @@ const profileSlice = createSlice({
         state.profiles.push(action.payload);
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        const index = state.profiles.findIndex(p => p.id === action.payload.id);
+        const index = state.profiles.findIndex(p => p._id === action.payload._id);
         if (index !== -1) {
           state.profiles[index] = action.payload;
         }
