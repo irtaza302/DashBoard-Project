@@ -4,16 +4,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
 import { profileSchema, type ProfileFormData } from '../schemas/profile.schema';
 import { Dialog } from '@headlessui/react';
-import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
-import { profileApi } from '../services/api';
+import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';;
 import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 import { ProfileForm } from '../components/profile/ProfileForm';
+import { formatDate } from '../utils/date';
+import { ConfirmDialog } from '../components/common/ConfirmDialog';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { fetchProfiles, createProfile, updateProfile, deleteProfile } from '../store/slices/profileSlice';
 
 const Profile = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [profiles, setProfiles] = useState<ProfileFormData[]>([]);
     const [editingProfile, setEditingProfile] = useState<ProfileFormData | null>(null);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [profileToDelete, setProfileToDelete] = useState<ProfileFormData | null>(null);
+
+    const dispatch = useAppDispatch();
+    const { profiles} = useAppSelector(state => state.profile);
 
     const form = useForm<ProfileFormData>({
         resolver: zodResolver(profileSchema),
@@ -26,43 +33,38 @@ const Profile = () => {
                 degree: '',
                 completionYear: new Date().getFullYear()
             },
-            expiryDate: new Date(),
+            expiryDate: formatDate(new Date()),
             studentCard: '',
             portfolio: '',
             githubLink: ''
-        }
+        },
+        mode: 'onChange',
+        shouldUnregister: false
     });
 
     const {
         reset,
-        setValue
     } = form;
 
-    const fetchProfiles = async () => {
-        try {
-            const data = await profileApi.getAll();
-            setProfiles(data);
-        } catch {
-            toast.error(PROFILE_CONSTANTS.TOAST_MESSAGES.FETCH_ERROR);
-        }
-    };
-
     useEffect(() => {
-        fetchProfiles();
-    }, []);
+        dispatch(fetchProfiles());
+    }, [dispatch]);
 
     const handleEdit = (profile: ProfileFormData) => {
         setEditingProfile(profile);
-        Object.entries(profile).forEach(([key, value]) => {
-            if (key === 'education' && typeof value === 'object' && value !== null && 'degree' in value) {
-                setValue('education.degree', value.degree);
-                setValue('education.completionYear', value.completionYear);
-            } else if (key === 'expiryDate') {
-                const dateValue = value instanceof Date ? value : new Date(value as string);
-                setValue(key as keyof ProfileFormData, dateValue.toISOString().split('T')[0]);
-            } else {
-                setValue(key as keyof ProfileFormData, value);
-            }
+        form.reset({
+            name: profile.name,
+            email: profile.email,
+            contact: profile.contact,
+            address: profile.address,
+            education: {
+                degree: profile.education.degree,
+                completionYear: profile.education.completionYear
+            },
+            studentCard: profile.studentCard,
+            expiryDate: formatDate(profile.expiryDate),
+            portfolio: profile.portfolio || '',
+            githubLink: profile.githubLink || ''
         });
         setIsOpen(true);
     };
@@ -73,26 +75,28 @@ const Profile = () => {
             const formattedData = {
                 ...data,
                 education: {
-                    ...data.education,
+                    degree: data.education.degree,
                     completionYear: Number(data.education.completionYear)
                 },
-                expiryDate: new Date(data.expiryDate)
+                expiryDate: new Date(data.expiryDate).toISOString(),
+                portfolio: data.portfolio || '',
+                githubLink: data.githubLink || ''
             };
 
             if (editingProfile?.id) {
-                await profileApi.update(editingProfile.id, formattedData);
+                await dispatch(updateProfile({ id: editingProfile.id, data: formattedData })).unwrap();
                 toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_SUCCESS);
             } else {
-                await profileApi.create(formattedData);
+                await dispatch(createProfile(formattedData)).unwrap();
                 toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_SUCCESS);
             }
 
-            await fetchProfiles();
-            reset();
-            setEditingProfile(null);
-            setIsOpen(false);
+            handleClose();
         } catch {
-            toast.error(editingProfile ? PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_ERROR : PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_ERROR);
+            toast.error(editingProfile ? 
+                PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_ERROR : 
+                PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_ERROR
+            );
         } finally {
             setIsLoading(false);
         }
@@ -101,7 +105,39 @@ const Profile = () => {
     const handleClose = () => {
         setIsOpen(false);
         setEditingProfile(null);
-        reset();
+        form.reset({
+            name: '',
+            email: '',
+            contact: '',
+            address: '',
+            education: {
+                degree: '',
+                completionYear: new Date().getFullYear()
+            },
+            studentCard: '',
+            expiryDate: formatDate(new Date()),
+            portfolio: '',
+            githubLink: ''
+        });
+    };
+
+    const handleDeleteClick = (profile: ProfileFormData) => {
+        setProfileToDelete(profile);
+        setDeleteConfirmOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!profileToDelete?.id) return;
+        
+        try {
+            await dispatch(deleteProfile(profileToDelete.id)).unwrap();
+            toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_SUCCESS);
+        } catch {
+            toast.error(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_ERROR);
+        } finally {
+            setDeleteConfirmOpen(false);
+            setProfileToDelete(null);
+        }
     };
 
     return (
@@ -156,16 +192,8 @@ const Profile = () => {
                                                 <PencilIcon className="h-5 w-5" />
                                             </button>
                                             <button
-                                                onClick={async () => {
-                                                    try {
-                                                        await profileApi.delete(profile.id!);
-                                                        toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_SUCCESS);
-                                                        fetchProfiles();
-                                                    } catch {
-                                                        toast.error(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_ERROR);
-                                                    }
-                                                }}
-                                                className="text-red-600 hover:text-red-900 transition-colors duration-150"
+                                                onClick={() => handleDeleteClick(profile)}
+                                                className="text-red-600 hover:text-red-900 transition-colors duration-200"
                                             >
                                                 <TrashIcon className="h-5 w-5" />
                                             </button>
@@ -209,6 +237,14 @@ const Profile = () => {
                     </div>
                 </div>
             </Dialog>
+
+            <ConfirmDialog
+                isOpen={deleteConfirmOpen}
+                onClose={() => setDeleteConfirmOpen(false)}
+                onConfirm={handleDeleteConfirm}
+                title="Delete Profile"
+                message="Are you sure you want to delete this profile? This action cannot be undone."
+            />
         </div>
     );
 };

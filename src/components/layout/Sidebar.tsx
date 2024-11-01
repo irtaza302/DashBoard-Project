@@ -9,6 +9,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { LAYOUT_CONSTANTS } from '../../constants/layout.constants';
+import { UI_CONSTANTS } from '../../constants/ui.constants';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -25,8 +27,8 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
   return (
     <motion.div
       initial={false}
-      animate={{ width: isOpen ? 256 : 80 }}
-      className="fixed left-0 h-screen bg-background-secondary border-r border-foreground/10 shadow-lg z-50"
+      animate={{ width: isOpen ? LAYOUT_CONSTANTS.SIDEBAR.EXPANDED_WIDTH : LAYOUT_CONSTANTS.SIDEBAR.COLLAPSED_WIDTH }}
+      className={`fixed left-0 h-screen bg-background-secondary border-r border-foreground/10 shadow-lg z-50 ${UI_CONSTANTS.TRANSITIONS.DEFAULT}`}
     >
       <div className="flex flex-col h-full">
         {/* Header */}
@@ -34,9 +36,9 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
           <AnimatePresence>
             {isOpen && (
               <motion.span
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: LAYOUT_CONSTANTS.SIDEBAR.ANIMATION.INITIAL_X }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: LAYOUT_CONSTANTS.SIDEBAR.ANIMATION.INITIAL_X }}
                 className="text-xl font-bold text-foreground"
               >
                 Gas App
@@ -45,15 +47,15 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
           </AnimatePresence>
           <button
             onClick={onToggle}
-            className={`p-2 rounded-lg hover:bg-background/80 text-foreground-secondary transition-all duration-200 ${
+            className={`p-2 rounded-lg hover:bg-background/80 text-foreground-secondary ${UI_CONSTANTS.TRANSITIONS.DEFAULT} ${
               !isOpen ? 'w-full flex justify-center' : ''
             }`}
             aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
           >
             {isOpen ? (
-              <ChevronLeftIcon className="w-5 h-5" />
+              <ChevronLeftIcon className={UI_CONSTANTS.ICONS.SIZE.DEFAULT} />
             ) : (
-              <ChevronRightIcon className="w-5 h-5 hover:scale-110 transition-transform" />
+              <ChevronRightIcon className={`${UI_CONSTANTS.ICONS.SIZE.DEFAULT} hover:scale-110 ${UI_CONSTANTS.TRANSITIONS.DEFAULT}`} />
             )}
           </button>
         </div>

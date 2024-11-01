@@ -7,12 +7,14 @@ import { ThemeProvider } from './context/ThemeContext';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import RequireAuth from './components/RequireAuth';
 import { PageLoader } from './components/common/PageLoader';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const DashboardLayout = React.lazy(() => import('./components/layout/DashboardLayout'));
 const LoginForm = React.lazy(() => import('./components/auth/LoginForm'));
 const Dashboard = React.lazy(() => import('./components/dashboard/Dashboard'));
-const Profile = React.lazy(() => import('./pages/Profile'));
 const About = React.lazy(() => import('./pages/About'));
+const Profile = React.lazy(() => import('./pages/Profile'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,36 +27,38 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <BrowserRouter>
-            <AuthProvider>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/login" element={<LoginForm />} />
-                  <Route
-                    path="/"
-                    element={
-                      <RequireAuth>
-                        <DashboardLayout />
-                      </RequireAuth>
-                    }
-                  >
-                    <Route index element={<Navigate to="/dashboard" replace />} />
-                    <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="about" element={<About />} />
-                  </Route>
-                  <Route path="*" element={<Navigate to="/login" replace />} />
-                </Routes>
-              </Suspense>
-              <Toaster position="top-right" />
-            </AuthProvider>
-          </BrowserRouter>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <Provider store={store}>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>
+            <BrowserRouter>
+              <AuthProvider>
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/login" element={<LoginForm />} />
+                    <Route
+                      path="/"
+                      element={
+                        <RequireAuth>
+                          <DashboardLayout />
+                        </RequireAuth>
+                      }
+                    >
+                      <Route index element={<Navigate to="/dashboard" replace />} />
+                      <Route path="dashboard" element={<Dashboard />} />
+                      <Route path="profile" element={<Profile />} />
+                      <Route path="about" element={<About />} />
+                    </Route>
+                    <Route path="*" element={<Navigate to="/login" replace />} />
+                  </Routes>
+                </Suspense>
+                <Toaster position="top-right" />
+              </AuthProvider>
+            </BrowserRouter>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </Provider>
   );
 }
 

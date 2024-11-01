@@ -1,34 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { fetchProfiles } from '../../store/slices/profileSlice';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell
 } from 'recharts';
-import { format } from 'date-fns';
-import { profileApi } from '../../services/api';
-import { ProfileFormData } from '../../schemas/profile.schema';
 import { COLORS } from '../../constants/colors';
 import { UsersIcon, AcademicCapIcon, ClockIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 import { StatCard } from './StatCard';
 import { EducationTrends } from './EducationTrends';
 import { ProfileTimeline } from './ProfileTimeline';
+import { EducationMatrix } from './EducationMatrix';
 
 const Dashboard = () => {
-  const [profiles, setProfiles] = useState<ProfileFormData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { profiles, loading } = useAppSelector(state => state.profile);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await profileApi.getAll();
-        setProfiles(data);
-      } catch (error) {
-        console.error('Failed to fetch profiles:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+    dispatch(fetchProfiles());
+  }, [dispatch]);
 
   const degreeDistribution = profiles.reduce((acc, profile) => {
     const degree = profile.education.degree;
@@ -39,11 +29,6 @@ const Dashboard = () => {
   const pieData = Object.entries(degreeDistribution).map(([name, value]) => ({
     name,
     value,
-  }));
-
-  const timelineData = profiles.map(profile => ({
-    date: format(new Date(profile.expiryDate), 'MMM yyyy'),
-    count: 1,
   }));
 
   const stats = [
@@ -145,6 +130,7 @@ const Dashboard = () => {
 
       {/* Full Width Charts */}
       <EducationTrends profiles={profiles} />
+      <EducationMatrix profiles={profiles} />
       <ProfileTimeline profiles={profiles} />
     </div>
   );

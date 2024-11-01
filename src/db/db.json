@@ -1,199 +1,154 @@
 {
   "profiles": [
     {
-      "name": "sarah",
-      "email": "sarah@example.com",
-      "contact": "03456789012",
-      "address": "123 Baker Street, Springfield, 12345, USA",
+      "name": "Emma Thompson",
+      "email": "emma.thompson@gmail.com",
+      "contact": "14155552671",
+      "address": "742 Silicon Valley Drive, San Francisco, CA 94105, USA",
       "education": {
-        "degree": "MSc Psychology",
+        "degree": "MSc Software Engineering",
         "completionYear": 2023
       },
-      "expiryDate": "2025-01-01T00:00:00.000Z",
-      "studentCard": "https://example.com/sarah/studentcard",
-      "portfolio": "https://example.com/sarah/portfolio",
-      "githubLink": "https://github.com/sarah",
-      "id": "4a56"
+      "studentCard": "STU2023001",
+      "expiryDate": "2025-06-30T00:00:00.000Z",
+      "portfolio": "https://emmathompson.dev",
+      "githubLink": "https://github.com/emmathompson",
+      "id": "p001"
     },
     {
-      "id": "5c67",
-      "name": "john",
-      "email": "john.doe@example.com",
-      "contact": "03567890123",
-      "address": "456 Elm Street, Metropolis, 67890, USA",
+      "id": "p002",
+      "name": "Alexander Chen",
+      "email": "alex.chen@outlook.com",
+      "contact": "12125556789",
+      "address": "123 Tech Plaza, New York, NY 10012, USA",
       "education": {
         "degree": "BSc Computer Science",
-        "completionYear": 2022
+        "completionYear": 2024
       },
-      "expiryDate": "2025-05-15T00:00:00.000Z",
-      "studentCard": "https://example.com/john/studentcard",
-      "portfolio": "https://example.com/john/portfolio",
-      "githubLink": "https://github.com/johndoe"
+      "expiryDate": "2026-05-15T00:00:00.000Z",
+      "studentCard": "STU2024002",
+      "portfolio": "https://alexchen.dev",
+      "githubLink": "https://github.com/alexchen"
     },
     {
-      "id": "6d78",
-      "name": "alice",
-      "email": "alice.wonder@example.com",
-      "contact": "03678901234",
-      "address": "789 Pine Street, Gotham, 23456, USA",
+      "id": "p003",
+      "name": "Sofia Rodriguez",
+      "email": "sofia.r@gmail.com",
+      "contact": "13105557890",
+      "address": "567 Innovation Ave, Los Angeles, CA 90001, USA",
       "education": {
-        "degree": "MA Literature",
-        "completionYear": 2021
+        "degree": "MSc Data Science",
+        "completionYear": 2025
       },
-      "expiryDate": "2025-09-20T00:00:00.000Z",
-      "studentCard": "https://example.com/alice/studentcard",
-      "portfolio": "https://example.com/alice/portfolio",
-      "githubLink": "https://github.com/alice"
+      "expiryDate": "2027-08-20T00:00:00.000Z",
+      "studentCard": "STU2025003",
+      "portfolio": "https://sofiarodriguez.ai",
+      "githubLink": "https://github.com/sofiar"
     },
     {
-      "id": "7e89",
-      "name": "bob",
-      "email": "bob.builder@example.com",
-      "contact": "03789012345",
-      "address": "321 Cedar Street, Smallville, 34567, USA",
+      "id": "p004",
+      "name": "James Wilson",
+      "email": "james.wilson@yahoo.com",
+      "contact": "16175558901",
+      "address": "890 Research Park, Boston, MA 02108, USA",
       "education": {
-        "degree": "BEng Civil Engineering",
-        "completionYear": 2020
+        "degree": "BSc Web Development",
+        "completionYear": 2024
       },
-      "expiryDate": "2026-02-28T00:00:00.000Z",
-      "studentCard": "https://example.com/bob/studentcard",
-      "portfolio": "https://example.com/bob/portfolio",
-      "githubLink": "https://github.com/bobbuilder"
+      "expiryDate": "2026-12-31T00:00:00.000Z",
+      "studentCard": "STU2024004",
+      "portfolio": "https://jameswilson.tech",
+      "githubLink": "https://github.com/jwilson"
     },
     {
-      "id": "8f90",
-      "name": "claire",
-      "email": "claire.redfield@example.com",
-      "contact": "03890123456",
-      "address": "654 Maple Street, Raccoon City, 45678, USA",
+      "id": "p005",
+      "name": "Aisha Patel",
+      "email": "aisha.patel@gmail.com",
+      "contact": "14085559012",
+      "address": "234 Developer Lane, San Jose, CA 95110, USA",
       "education": {
-        "degree": "BSc Biochemistry",
-        "completionYear": 2019
+        "degree": "MSc Artificial Intelligence",
+        "completionYear": 2023
       },
-      "expiryDate": "2026-06-30T00:00:00.000Z",
-      "studentCard": "https://example.com/claire/studentcard",
-      "portfolio": "https://example.com/claire/portfolio",
-      "githubLink": "https://github.com/claireredfield"
+      "expiryDate": "2025-09-30T00:00:00.000Z",
+      "studentCard": "STU2023005",
+      "portfolio": "https://aishapatel.dev",
+      "githubLink": "https://github.com/aishap"
     },
     {
-      "id": "9g01",
-      "name": "dave",
-      "email": "dave.miller@example.com",
-      "contact": "03901234567",
-      "address": "987 Oak Street, Star City, 56789, USA",
+      "id": "p006",
+      "name": "Lucas Schmidt",
+      "email": "lucas.schmidt@outlook.com",
+      "contact": "15125550123",
+      "address": "456 Coding Court, Austin, TX 78701, USA",
       "education": {
-        "degree": "MBA",
-        "completionYear": 2018
+        "degree": "BSc Computer Science",
+        "completionYear": 2024
       },
-      "expiryDate": "2026-10-31T00:00:00.000Z",
-      "studentCard": "https://example.com/dave/studentcard",
-      "portfolio": "https://example.com/dave/portfolio",
-      "githubLink": "https://github.com/davemiller"
+      "expiryDate": "2026-07-15T00:00:00.000Z",
+      "studentCard": "STU2024006",
+      "portfolio": "https://lucasschmidt.cloud",
+      "githubLink": "https://github.com/lschmidt"
     },
     {
-      "id": "0h12",
-      "name": "eva",
-      "email": "eva.green@example.com",
-      "contact": "04012345678",
-      "address": "213 Willow Street, Emerald City, 67890, USA",
+      "id": "p007",
+      "name": "Maya Johnson",
+      "email": "maya.johnson@gmail.com",
+      "contact": "12065551234",
+      "address": "789 Algorithm Road, Seattle, WA 98101, USA",
       "education": {
-        "degree": "PhD Neuroscience",
-        "completionYear": 2017
+        "degree": "MSc Software Engineering",
+        "completionYear": 2023
       },
-      "expiryDate": "2027-03-15T00:00:00.000Z",
-      "studentCard": "https://example.com/eva/studentcard",
-      "portfolio": "https://example.com/eva/portfolio",
-      "githubLink": "https://github.com/evagreen"
+      "expiryDate": "2025-11-30T00:00:00.000Z",
+      "studentCard": "STU2023007",
+      "portfolio": "https://mayajohnson.dev",
+      "githubLink": "https://github.com/mayaj"
     },
     {
-      "id": "1i23",
-      "name": "frank",
-      "email": "frank.castle@example.com",
-      "contact": "04123456789",
-      "address": "321 Birch Street, Liberty City, 78901, USA",
+      "id": "p008",
+      "name": "Daniel Kim",
+      "email": "daniel.kim@yahoo.com",
+      "contact": "13035552345",
+      "address": "321 Database Drive, Denver, CO 80202, USA",
       "education": {
-        "degree": "JD Law",
-        "completionYear": 2016
+        "degree": "MSc Data Science",
+        "completionYear": 2025
       },
-      "expiryDate": "2027-07-04T00:00:00.000Z",
-      "studentCard": "https://example.com/frank/studentcard",
-      "portfolio": "https://example.com/frank/portfolio",
-      "githubLink": "https://github.com/frankcastle"
+      "expiryDate": "2027-04-15T00:00:00.000Z",
+      "studentCard": "STU2025008",
+      "portfolio": "https://danielkim.data",
+      "githubLink": "https://github.com/dkim"
     },
     {
-      "id": "2j34",
-      "name": "grace",
-      "email": "grace.hopper@example.com",
-      "contact": "04234567890",
-      "address": "456 Birch Street, Silicon Valley, 89012, USA",
-      "education": {
-        "degree": "PhD Computer Science",
-        "completionYear": 2015
-      },
-      "expiryDate": "2027-11-11T00:00:00.000Z",
-      "studentCard": "https://example.com/grace/studentcard",
-      "portfolio": "https://example.com/grace/portfolio",
-      "githubLink": "https://github.com/gracehopper"
-    },
-    {
-      "name": "nouman",
+      "id": "9181",
+      "name": "Irtaza malik",
       "email": "malikirtaza302@hotmail.com",
-      "contact": "03032839928",
+      "contact": "923035737327",
       "address": "House 312, Sector B1, Block 13, Township",
       "education": {
         "degree": "BSCD",
-        "completionYear": 2020
+        "completionYear": 2000
       },
-      "expiryDate": "2024-10-02T00:00:00.000Z",
-      "studentCard": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "portfolio": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "githubLink": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "id": "8818"
+      "studentCard": "2113123123",
+      "expiryDate": "2024-12-26T00:00:00.000Z",
+      "portfolio": "",
+      "githubLink": ""
     },
     {
-      "id": "7608",
+      "id": "bd48",
       "name": "Irtaza malik",
-      "email": "malikirtaza96@gmail.com",
-      "contact": "03032839928",
+      "email": "malikirtaza302@hotmail.com",
+      "contact": "10201203012",
       "address": "House 312, Sector B1, Block 13, Township",
       "education": {
-        "degree": "BSDS",
-        "completionYear": 2023
-      },
-      "expiryDate": "2024-10-24T00:00:00.000Z",
-      "studentCard": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "portfolio": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "githubLink": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel"
-    },
-    {
-      "id": "5abe",
-      "name": "Irtaza Data Scientist Malik",
-      "email": "malikirtaza96@gmail.com",
-      "contact": "03032839928",
-      "address": "House 312, Sector B1, Block 13, Township, Lahore, 54770, Pakistan",
-      "education": {
-        "degree": "BS-CDS",
-        "completionYear": 2021
-      },
-      "expiryDate": "2024-10-16T00:00:00.000Z",
-      "studentCard": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "portfolio": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "githubLink": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel"
-    },
-    {
-      "id": "9e52",
-      "name": "Irtaza Data Scientist Malik",
-      "email": "malikirtaza96@gmail.com",
-      "contact": "03032839928",
-      "address": "House 312, Sector B1, Block 13, Township, Lahore, 54770, Pakistan",
-      "education": {
-        "degree": "BSDS",
+        "degree": "BSCD",
         "completionYear": 2024
       },
-      "expiryDate": "2024-10-01T00:00:00.000Z",
-      "studentCard": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "portfolio": "https://www.youtube.com/watch?v=qAaVAwDiSHM&t=4542s&ab_channel=EngineerMuhammadAliMirza-OfficialChannel",
-      "githubLink": "https://www.youtube.com/watch?v=qAaVAwDiSHM&list=TLPQMzAxMDIwMjSweEZXeApUFQ&index=2&ab_channel=EngineerMuhammadAliMirza-OfficialChannel"
+      "studentCard": "F2010232321",
+      "expiryDate": "2024-10-31T00:00:00.000Z",
+      "portfolio": "",
+      "githubLink": ""
     }
   ]
 }
