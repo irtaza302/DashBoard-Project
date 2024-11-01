@@ -3,15 +3,14 @@ import { ProfileFormData } from '../schemas/profile.schema';
 import { toast } from 'react-hot-toast';
 import { API_CONFIG } from '../config/api.config';
 
-// Get the base URL based on environment
 const baseURL = process.env.NODE_ENV === 'production' 
-  ? '' // Remove the /api prefix since it's already in the routes
-  : 'http://localhost:5000';
+  ? '/api' 
+  : 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL,
   headers: API_CONFIG.HEADERS,
-  timeout: 30000 // Increased timeout to 30 seconds
+  timeout: API_CONFIG.TIMEOUT
 });
 
 // Add request interceptor for logging
@@ -66,7 +65,7 @@ export const profileApi = {
   
   update: async (id: string, data: Partial<Omit<ProfileFormData, 'id' | '_id'>>): Promise<ProfileFormData> => {
     try {
-      const response = await api.put<ProfileFormData>(`/api/profiles/${id}`, data);
+      const response = await api.put<ProfileFormData>(`/profiles/${id}`, data);
       return response.data;
     } catch (error) {
       console.error('Update Profile Error:', error);
@@ -76,7 +75,7 @@ export const profileApi = {
   
   delete: async (id: string): Promise<void> => {
     try {
-      await api.delete(`/api/profiles/${id}`);
+      await api.delete(`/profiles/${id}`);
     } catch (error) {
       console.error('Delete Profile Error:', error);
       throw error;

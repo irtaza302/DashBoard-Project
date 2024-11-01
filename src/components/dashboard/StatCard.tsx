@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 interface StatCardProps {
   title: string;
-  value: number;
+  value: number | string;
   icon?: ReactNode;
   trend?: {
     value: number;
@@ -11,12 +11,14 @@ interface StatCardProps {
 }
 
 export const StatCard = ({ title, value, icon, trend }: StatCardProps) => {
+  const displayValue = value ?? 0;
+
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="mt-1 text-3xl font-semibold text-gray-900">{value}</p>
+          <p className="mt-1 text-3xl font-semibold text-gray-900">{displayValue}</p>
         </div>
         {icon && <div className="p-3 bg-indigo-50 rounded-lg">{icon}</div>}
       </div>
