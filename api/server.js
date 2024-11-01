@@ -29,10 +29,7 @@ const connectDB = async (retries = 5) => {
       w: 'majority',
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      // Add these options for better connection handling
-      socketTimeoutMS: 30000,
-      keepAlive: true,
-      connectTimeoutMS: 30000,
+      connectTimeoutMS: 10000
     });
 
     console.log('MongoDB Connected Successfully');
@@ -54,7 +51,7 @@ const connectDB = async (retries = 5) => {
     console.error('MongoDB connection error:', error);
     if (retries > 0) {
       console.log(`Retrying connection... (${retries} attempts left)`);
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+      await new Promise(resolve => setTimeout(resolve, 5000));
       return connectDB(retries - 1);
     }
     process.exit(1);

@@ -3,36 +3,16 @@
   "builds": [
     {
       "src": "api/server.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "10mb"
-      }
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "buildCommand": "npm run build",
-        "outputDirectory": "dist"
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/profiles",
-      "dest": "api/server.js",
-      "methods": ["GET", "POST", "PUT", "DELETE"]
-    },
-    {
       "src": "/api/(.*)",
       "dest": "api/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "dist/$1"
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "MONGODB_URI": "@mongodb_uri"
   }
 } 
