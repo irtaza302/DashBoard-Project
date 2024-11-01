@@ -128,14 +128,20 @@ const Profile = () => {
     };
 
     const handleDeleteConfirm = async () => {
-        if (!profileToDelete?.id) return;
+        if (!profileToDelete?._id) {
+            console.error('No profile ID found');
+            return;
+        }
         
         try {
-            await dispatch(deleteProfile(profileToDelete.id)).unwrap();
+            setIsLoading(true);
+            await dispatch(deleteProfile(profileToDelete._id)).unwrap();
             toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_SUCCESS);
-        } catch {
+        } catch (error) {
+            console.error('Delete error:', error);
             toast.error(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_ERROR);
         } finally {
+            setIsLoading(false);
             setDeleteConfirmOpen(false);
             setProfileToDelete(null);
         }
@@ -178,8 +184,8 @@ const Profile = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            {profiles.map((profile, index) => (
-                                <tr key={index} className="hover:bg-gray-50 transition-colors duration-150">
+                            {profiles.map((profile) => (
+                                <tr key={profile._id} className="hover:bg-gray-50 transition-colors duration-150">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{profile.name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{profile.email}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{profile.contact}</td>
@@ -245,6 +251,7 @@ const Profile = () => {
                 onConfirm={handleDeleteConfirm}
                 title="Delete Profile"
                 message="Are you sure you want to delete this profile? This action cannot be undone."
+                isLoading={isLoading}
             />
         </div>
     );

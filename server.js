@@ -110,7 +110,10 @@ app.put('/api/profiles/:id', async (req, res) => {
 
 app.delete('/api/profiles/:id', async (req, res) => {
   try {
-    await Profile.findByIdAndDelete(req.params.id);
+    const result = await Profile.findByIdAndDelete(req.params.id);
+    if (!result) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
     res.status(204).send();
   } catch (error) {
     console.error('Profile deletion error:', error);

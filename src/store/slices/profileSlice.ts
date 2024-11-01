@@ -74,7 +74,7 @@ const profileSlice = createSlice({
         }
       })
       .addCase(deleteProfile.fulfilled, (state, action) => {
-        state.profiles = state.profiles.filter(p => p.id !== action.payload);
+        state.profiles = state.profiles.filter(profile => profile._id !== action.payload);
       });
   },
 });

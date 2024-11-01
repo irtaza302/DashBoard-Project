@@ -22,4 +22,5 @@ export const profileSchema = z.object({
 
 export type ProfileFormData = z.infer<typeof profileSchema> & {
   id?: string;
+  _id?: string;
 }; 

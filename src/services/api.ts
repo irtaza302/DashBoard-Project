@@ -38,7 +38,7 @@ api.interceptors.response.use(
 );
 
 export const profileApi = {
-  create: async (data: ProfileFormData) => {
+  create: async (data: Omit<ProfileFormData, 'id' | '_id'>) => {
     try {
       const response = await api.post('/api/profiles', data);
       return response.data;
@@ -48,7 +48,7 @@ export const profileApi = {
     }
   },
   
-  getAll: async () => {
+  getAll: async (): Promise<ProfileFormData[]> => {
     try {
       const response = await api.get('/api/profiles');
       return response.data;
@@ -58,7 +58,7 @@ export const profileApi = {
     }
   },
   
-  update: async (id: string, data: Partial<ProfileFormData>) => {
+  update: async (id: string, data: Partial<Omit<ProfileFormData, 'id' | '_id'>>) => {
     try {
       const response = await api.put(`/api/profiles/${id}`, data);
       return response.data;
