@@ -5,8 +5,8 @@ import { API_CONFIG } from '../config/api.config';
 
 // Get the base URL based on environment
 const baseURL = process.env.NODE_ENV === 'production' 
-  ? '/api' // Use relative path for production
-  : 'http://localhost:5000/api';
+  ? '' // Remove the /api prefix since it's already in the routes
+  : 'http://localhost:5000';
 
 const api = axios.create({
   baseURL,
@@ -46,7 +46,7 @@ api.interceptors.response.use(
 export const profileApi = {
   create: async (data: Omit<ProfileFormData, 'id' | '_id'>): Promise<ProfileFormData> => {
     try {
-      const response = await api.post<ProfileFormData>('/api/profiles', data);
+      const response = await api.post<ProfileFormData>('/profiles', data);
       return response.data;
     } catch (error) {
       console.error('Create Profile Error:', error);
@@ -56,7 +56,7 @@ export const profileApi = {
   
   getAll: async (): Promise<ProfileFormData[]> => {
     try {
-      const response = await api.get<ProfileFormData[]>('/api/profiles');
+      const response = await api.get<ProfileFormData[]>('/profiles');
       return response.data;
     } catch (error) {
       console.error('Get Profiles Error:', error);

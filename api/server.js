@@ -1,7 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 import { Profile } from './models/profile.js';
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 
@@ -9,34 +13,35 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI, {
-  serverSelectionTimeoutMS: 5000,
-})
-.then(() => {
-  console.log('Connected to MongoDB');
-})
-.catch(err => {
-  console.error('MongoDB connection error:', err);
-  process.exit(1);
-});
+// MongoDB Connection with better error handling
+const connectDB = async () => {
+  try {
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI is not defined in environment variables');
+    }
 
-// Add connection error handler
-mongoose.connection.on('error', err => {
-  console.error('MongoDB connection error:', err);
-});
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      retryWrites: true,
+      w: 'majority',
+    });
+    
+    console.log('MongoDB Connected Successfully');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
 
-// Add connection success handler
-mongoose.connection.once('open', () => {
-  console.log('MongoDB database connection established successfully');
-});
+connectDB();
 
 // API Routes
-app.get('/api/profiles', async (req, res) => {
+app.get('/profiles', async (req, res) => {
   try {
     const profiles = await Profile.find();
     res.json(profiles);
   } catch (error) {
+    console.error('Fetch profiles error:', error);
     res.status(500).json({ error: 'Failed to fetch profiles' });
   }
 });
