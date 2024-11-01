@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { fetchProfiles } from '../../store/slices/profileSlice';
 import { 
@@ -20,11 +20,14 @@ const Dashboard = () => {
     dispatch(fetchProfiles());
   }, [dispatch]);
 
-  const degreeDistribution = profiles.reduce((acc, profile) => {
-    const degree = profile.education.degree;
-    acc[degree] = (acc[degree] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const degreeDistribution = useMemo(() => 
+    profiles.reduce((acc, profile) => {
+      const degree = profile.education.degree;
+      acc[degree] = (acc[degree] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>),
+    [profiles]
+  );
 
   const pieData = Object.entries(degreeDistribution).map(([name, value]) => ({
     name,
