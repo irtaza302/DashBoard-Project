@@ -16,6 +16,11 @@
   ],
   "routes": [
     {
+      "src": "/manifest.webmanifest",
+      "headers": { "Content-Type": "application/manifest+json" },
+      "dest": "dist/manifest.webmanifest"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "api/server.js"
     },
