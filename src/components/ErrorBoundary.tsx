@@ -37,4 +37,14 @@ export class ErrorBoundary extends Component<Props, State> {
 
         return this.props.children;
     }
+
+    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+        console.error('Error caught by boundary:', error, errorInfo);
+        
+        // You might want to send this to an error reporting service
+        if (process.env.NODE_ENV === 'production') {
+            // Log to your error reporting service
+            console.error('Production error:', error);
+        }
+    }
 } 
