@@ -11,15 +11,6 @@
     --primary-600: #4f46e5;
     --primary-700: #4338ca;
   }
-
-  .dark {
-    --background: #111827;
-    --background-secondary: #1f2937;
-    --foreground: #f9fafb;
-    --foreground-secondary: #d1d5db;
-    --primary-600: #6366f1;
-    --primary-700: #4f46e5;
-  }
 }
 
 body {
