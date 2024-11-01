@@ -6,7 +6,7 @@ import { API_CONFIG } from '../config/api.config';
 // Get the base URL based on environment
 const baseURL = process.env.NODE_ENV === 'production' 
   ? '/api' // Use relative path for production
-  : 'http://localhost:5000';
+  : 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL,

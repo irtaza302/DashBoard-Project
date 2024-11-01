@@ -10,11 +10,26 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://apple:vV5geXeBnCe5Bkld@cluster0.xiikm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 5000,
+})
+.then(() => {
+  console.log('Connected to MongoDB');
+})
+.catch(err => {
+  console.error('MongoDB connection error:', err);
+  process.exit(1);
+});
 
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Add connection error handler
+mongoose.connection.on('error', err => {
+  console.error('MongoDB connection error:', err);
+});
+
+// Add connection success handler
+mongoose.connection.once('open', () => {
+  console.log('MongoDB database connection established successfully');
+});
 
 // API Routes
 app.get('/api/profiles', async (req, res) => {
@@ -28,11 +43,17 @@ app.get('/api/profiles', async (req, res) => {
 
 app.post('/api/profiles', async (req, res) => {
   try {
+    console.log('Received profile data:', req.body);
     const newProfile = new Profile(req.body);
-    await newProfile.save();
-    res.json(newProfile);
+    const savedProfile = await newProfile.save();
+    console.log('Saved profile:', savedProfile);
+    res.json(savedProfile);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create profile' });
+    console.error('Profile creation error:', error);
+    res.status(500).json({ 
+      error: 'Failed to create profile',
+      details: error.message 
+    });
   }
 });
 

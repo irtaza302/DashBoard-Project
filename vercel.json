@@ -9,17 +9,12 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "buildCommand": "npm install && npm run build",
+        "buildCommand": "npm run build",
         "outputDirectory": "dist"
       }
     }
   ],
   "routes": [
-    {
-      "src": "/manifest.webmanifest",
-      "headers": { "Content-Type": "application/manifest+json" },
-      "dest": "dist/manifest.webmanifest"
-    },
     {
       "src": "/api/(.*)",
       "dest": "api/server.js"
