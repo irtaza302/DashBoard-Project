@@ -92,7 +92,8 @@ const Profile = () => {
             }
 
             handleClose();
-        } catch {
+        } catch (error) {
+            console.error('Submission error:', error);
             toast.error(editingProfile ? 
                 PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_ERROR : 
                 PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_ERROR

@@ -1,8 +1,8 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 interface AuthContextType {
-  user: string | null;
   isAuthenticated: boolean;
+  user: string | null;
   login: (email: string) => void;
   logout: () => void;
 }
@@ -10,37 +10,21 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<string | null>(() => {
-    // Initialize from localStorage
-    return localStorage.getItem('user');
-  });
-
-  const isAuthenticated = Boolean(user);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
 
   const login = (email: string) => {
+    setIsAuthenticated(true);
     setUser(email);
-    localStorage.setItem('user', email);
   };
 
   const logout = () => {
+    setIsAuthenticated(false);
     setUser(null);
-    localStorage.removeItem('user');
   };
 
-  // Optional: Handle storage events for multi-tab support
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'user') {
-        setUser(e.newValue);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

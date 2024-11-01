@@ -1,17 +1,16 @@
 import { toast } from 'react-hot-toast';
 import { AxiosError } from 'axios';
-import * as Sentry from '@sentry/react';
 
 export const handleApiError = (error: unknown) => {
-  if (error instanceof AxiosError) {
-    const message = error.response?.data?.message || 'An error occurred';
-    toast.error(message);
-    Sentry.captureException(error);
-    return message;
-  }
-  
-  const errorMessage = 'An unexpected error occurred';
-  toast.error(errorMessage);
-  Sentry.captureException(error);
-  return errorMessage;
+    if (error instanceof AxiosError) {
+        const message = error.response?.data?.details || error.response?.data?.error || 'An error occurred';
+        console.error('API Error:', error.response?.data);
+        toast.error(message);
+        return message;
+    }
+    
+    const errorMessage = 'An unexpected error occurred';
+    console.error('Unexpected error:', error);
+    toast.error(errorMessage);
+    return errorMessage;
 }; 

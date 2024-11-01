@@ -31,15 +31,9 @@ const LoginForm = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
-      if (data.email && data.password) {
-        login(data.email);
-        toast.success('Login successful');
-        setTimeout(() => {
-          navigate(from, { replace: true });
-        }, 100);
-      } else {
-        toast.error('Invalid credentials');
-      }
+      login(data.email);
+      toast.success('Login successful');
+      navigate(from, { replace: true });
     } catch (error: unknown) {
       console.error('Login error:', error);
       toast.error('Login failed');
