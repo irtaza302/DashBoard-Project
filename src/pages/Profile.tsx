@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';   
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
@@ -9,21 +9,25 @@ import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 import { ProfileForm } from '../components/profile/ProfileForm';
 import { formatDate } from '../utils/date';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { fetchProfiles, createProfile, updateProfile, deleteProfile } from '../store/slices/profileSlice';
+import { 
+  useGetProfilesQuery,
+  useCreateProfileMutation,
+  useUpdateProfileMutation,
+  useDeleteProfileMutation
+} from '../store/api/profileApi';
+import { ProfileTable } from '../components/profile/ProfileTable';
 
 const Profile = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [editingProfile, setEditingProfile] = useState<ProfileFormData | null>(null);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [profileToDelete, setProfileToDelete] = useState<ProfileFormData | null>(null);
-    const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
-    const [pageSize] = useState(10);
 
-    const dispatch = useAppDispatch();
-    const { profiles} = useAppSelector(state => state.profile);
+    const { data: profiles = [], isLoading } = useGetProfilesQuery();
+    const [createProfile] = useCreateProfileMutation();
+    const [updateProfile] = useUpdateProfileMutation();
+    const [deleteProfile] = useDeleteProfileMutation();
 
     const form = useForm<ProfileFormData>({
         resolver: zodResolver(profileSchema),
@@ -49,10 +53,6 @@ const Profile = () => {
         reset,
     } = form;
 
-    useEffect(() => {
-        dispatch(fetchProfiles());
-    }, [dispatch]);
-
     const handleEdit = (profile: ProfileFormData) => {
         setEditingProfile(profile);
         form.reset({
@@ -74,7 +74,6 @@ const Profile = () => {
 
     const onSubmit = async (data: ProfileFormData) => {
         try {
-            setIsLoading(true);
             const formattedData = {
                 ...data,
                 education: {
@@ -86,34 +85,23 @@ const Profile = () => {
                 githubLink: data.githubLink || ''
             };
 
-            console.log('Submitting profile:', {
-                isEditing: !!editingProfile?._id,
-                profileId: editingProfile?._id,
-                formData: formattedData
-            });
-
             if (editingProfile?._id) {
-                const result = await dispatch(updateProfile({ 
+                await updateProfile({ 
                     id: editingProfile._id, 
                     data: formattedData 
-                })).unwrap();
-                console.log('Update result:', result);
-                toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_SUCCESS);
+                }).unwrap();
+                toast.success('Profile updated successfully');
             } else {
-                const result = await dispatch(createProfile(formattedData)).unwrap();
-                console.log('Create result:', result);
-                toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_SUCCESS);
+                await createProfile(formattedData).unwrap();
+                toast.success('Profile created successfully');
             }
-
             handleClose();
         } catch (error) {
             console.error('Submission error:', error);
             toast.error(editingProfile ? 
-                PROFILE_CONSTANTS.TOAST_MESSAGES.UPDATE_ERROR : 
-                PROFILE_CONSTANTS.TOAST_MESSAGES.SAVE_ERROR
+                'Failed to update profile' : 
+                'Failed to create profile'
             );
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -142,22 +130,15 @@ const Profile = () => {
     };
 
     const handleDeleteConfirm = async () => {
-        if (!profileToDelete?._id) {
-            console.error('No profile ID found');
-            return;
-        }
+        if (!profileToDelete?._id) return;
         
         try {
-            setIsLoading(true);
-            await dispatch(deleteProfile(profileToDelete._id)).unwrap();
-            toast.success(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_SUCCESS);
+            await deleteProfile(profileToDelete._id).unwrap();
+            toast.success('Profile deleted successfully');
+            setDeleteConfirmOpen(false);
         } catch (error) {
             console.error('Delete error:', error);
-            toast.error(PROFILE_CONSTANTS.TOAST_MESSAGES.DELETE_ERROR);
-        } finally {
-            setIsLoading(false);
-            setDeleteConfirmOpen(false);
-            setProfileToDelete(null);
+            toast.error('Failed to delete profile');
         }
     };
 
@@ -168,11 +149,6 @@ const Profile = () => {
             profile.education.degree.toLowerCase().includes(search.toLowerCase())
         );
     }, [profiles, search]);
-
-    const paginatedProfiles = useMemo(() => {
-        const start = (page - 1) * pageSize;
-        return filteredProfiles.slice(start, start + pageSize);
-    }, [filteredProfiles, page, pageSize]);
 
     return (
         <div className="p-8 bg-background min-h-screen">
@@ -198,47 +174,13 @@ const Profile = () => {
             </div>
 
             {/* Table Section */}
-            <div className="bg-background-secondary rounded-xl shadow-sm border border-foreground/10">
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr className="bg-gray-50">
-                                {Object.values(PROFILE_CONSTANTS.TABLE_HEADERS).map((header, index) => (
-                                    <th key={index} className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        {header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {paginatedProfiles.map((profile) => (
-                                <tr key={profile._id} className="hover:bg-gray-50 transition-colors duration-150">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{profile.name}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{profile.email}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{profile.contact}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{profile.education.degree}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                        <div className="flex space-x-3">
-                                            <button
-                                                onClick={() => handleEdit(profile)}
-                                                className="text-indigo-600 hover:text-indigo-900 transition-colors duration-150"
-                                            >
-                                                <PencilIcon className="h-5 w-5" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteClick(profile)}
-                                                className="text-red-600 hover:text-red-900 transition-colors duration-200"
-                                            >
-                                                <TrashIcon className="h-5 w-5" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <ProfileTable 
+                data={filteredProfiles}
+                onEdit={handleEdit}
+                onDelete={handleDeleteClick}
+                searchQuery={search}
+                onSearchChange={setSearch}
+            />
 
             {/* Modal Form */}
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
@@ -280,34 +222,6 @@ const Profile = () => {
                 message="Are you sure you want to delete this profile? This action cannot be undone."
                 isLoading={isLoading}
             />
-
-            <div className="mb-4">
-                <input
-                    type="text"
-                    placeholder="Search profiles..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="px-4 py-2 border rounded-lg"
-                />
-            </div>
-
-            <div className="mt-4 flex justify-between items-center">
-                <button
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="px-4 py-2 bg-gray-100 rounded-lg disabled:opacity-50"
-                >
-                    Previous
-                </button>
-                <span>Page {page} of {Math.ceil(filteredProfiles.length / pageSize)}</span>
-                <button
-                    onClick={() => setPage(p => p + 1)}
-                    disabled={page >= Math.ceil(filteredProfiles.length / pageSize)}
-                    className="px-4 py-2 bg-gray-100 rounded-lg disabled:opacity-50"
-                >
-                    Next
-                </button>
-            </div>
         </div>
     );
 };

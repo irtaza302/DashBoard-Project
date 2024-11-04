@@ -1,11 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
-import profileReducer from './slices/profileSlice';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { profileApi } from './api/profileApi';
 
 export const store = configureStore({
   reducer: {
-    profile: profileReducer,
+    [profileApi.reducerPath]: profileApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(profileApi.middleware),
 });
+
+setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch; 

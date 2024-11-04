@@ -2,8 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../context/AuthContext';
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
+  Bars3Icon,
   ArrowRightOnRectangleIcon,
   UserCircleIcon
 } from '@heroicons/react/24/outline';
@@ -52,11 +51,7 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
             }`}
             aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
           >
-            {isOpen ? (
-              <ChevronLeftIcon className={UI_CONSTANTS.ICONS.SIZE.DEFAULT} />
-            ) : (
-              <ChevronRightIcon className={`${UI_CONSTANTS.ICONS.SIZE.DEFAULT} hover:scale-110 ${UI_CONSTANTS.TRANSITIONS.DEFAULT}`} />
-            )}
+            <Bars3Icon className={`${UI_CONSTANTS.ICONS.SIZE.DEFAULT} hover:scale-110 ${UI_CONSTANTS.TRANSITIONS.DEFAULT}`} />
           </button>
         </div>
 
