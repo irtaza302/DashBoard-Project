@@ -88,7 +88,7 @@ const Profile = () => {
             if (editingProfile?._id) {
                 await updateProfile({ 
                     id: editingProfile._id, 
-                    data: formattedData 
+                    profile: formattedData 
                 }).unwrap();
                 toast.success('Profile updated successfully');
             } else {
