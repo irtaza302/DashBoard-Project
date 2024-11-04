@@ -1,8 +1,18 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ProfileFormData } from '../../schemas/profile.schema';
 import { format } from 'date-fns';
+import { ChartSkeleton } from './ChartSkeleton';
 
-export const ProfileTimeline = ({ profiles }: { profiles: ProfileFormData[] }) => {
+interface Props {
+  profiles: ProfileFormData[];
+  loading?: boolean;
+}
+
+export const ProfileTimeline = ({ profiles, loading }: Props) => {
+  if (loading) {
+    return <ChartSkeleton />;
+  }
+
   // Sort profiles by expiry date and create cumulative data
   const timelineData = profiles
     .map(profile => ({

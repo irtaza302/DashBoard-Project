@@ -1,7 +1,17 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { ProfileFormData } from '../../schemas/profile.schema';
+import { ChartSkeleton } from './ChartSkeleton';
 
-export const EducationTrends = ({ profiles }: { profiles: ProfileFormData[] }) => {
+interface Props {
+  profiles: ProfileFormData[];
+  loading?: boolean;
+}
+
+export const EducationTrends = ({ profiles, loading }: Props) => {
+  if (loading) {
+    return <ChartSkeleton />;
+  }
+
   // Group profiles by completion year
   const yearlyData = profiles.reduce((acc, profile) => {
     const year = profile.education.completionYear;

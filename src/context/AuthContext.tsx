@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -10,8 +10,24 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<string | null>(null);
+  // Initialize state from localStorage
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('isAuthenticated') === 'true';
+  });
+  
+  const [user, setUser] = useState<string | null>(() => {
+    return localStorage.getItem('user');
+  });
+
+  // Update localStorage when auth state changes
+  useEffect(() => {
+    localStorage.setItem('isAuthenticated', isAuthenticated.toString());
+    if (user) {
+      localStorage.setItem('user', user);
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [isAuthenticated, user]);
 
   const login = (email: string) => {
     setIsAuthenticated(true);
@@ -21,6 +37,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
+    // Clear auth data from localStorage
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('user');
   };
 
   return (

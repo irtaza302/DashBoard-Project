@@ -1,12 +1,18 @@
 import { ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, Cell } from 'recharts';
 import { ProfileFormData } from '../../schemas/profile.schema';
 import { COLORS } from '../../constants/colors';
+import { ChartSkeleton } from './ChartSkeleton';
 
 interface EducationMatrixProps {
   profiles: ProfileFormData[];
+  loading?: boolean;
 }
 
-export const EducationMatrix = ({ profiles }: EducationMatrixProps) => {
+export const EducationMatrix = ({ profiles, loading }: EducationMatrixProps) => {
+  if (loading) {
+    return <ChartSkeleton />;
+  }
+
   // Transform data for visualization
   const matrixData = profiles.map(profile => ({
     completionYear: profile.education.completionYear,

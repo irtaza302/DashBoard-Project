@@ -28,5 +28,9 @@ export const UI_CONSTANTS = {
     DEFAULT: 'rounded-lg',
     FULL: 'rounded-full',
     XL: 'rounded-xl'
+  },
+  ANIMATIONS: {
+    FADE_IN: 'animate-fadeIn',
+    PULSE: 'animate-pulse',
   }
 } as const; 

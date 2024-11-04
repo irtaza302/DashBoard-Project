@@ -1,24 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { fetchProfiles } from '../../store/slices/profileSlice';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell
-} from 'recharts';
-import { COLORS } from '../../constants/colors';
-import { UsersIcon, AcademicCapIcon, ClockIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 import { StatCard } from './StatCard';
+import { StatCardSkeleton } from './StatCardSkeleton';
+import { ChartSkeleton } from './ChartSkeleton';
 import { EducationTrends } from './EducationTrends';
 import { ProfileTimeline } from './ProfileTimeline';
 import { EducationMatrix } from './EducationMatrix';
-
-interface CustomLabelProps {
-  name: string;
-  percent: number;
-}
-
-const CustomLabel = ({ name, percent }: CustomLabelProps) => 
-  `${name} ${(percent * 100).toFixed(0)}%`;
+import { ProfileStatistics } from './ProfileStatistics';
+import { DegreeDistribution } from './DegreeDistribution';
+import { UsersIcon, AcademicCapIcon, ClockIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -28,21 +19,7 @@ const Dashboard = () => {
     dispatch(fetchProfiles());
   }, [dispatch]);
 
-  const degreeDistribution = useMemo(() => 
-    profiles.reduce((acc, profile) => {
-      const degree = profile.education.degree;
-      acc[degree] = (acc[degree] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>),
-    [profiles]
-  );
-
-  const pieData = Object.entries(degreeDistribution).map(([name, value]) => ({
-    name,
-    value,
-  }));
-
-  const stats = [
+  const stats = useMemo(() => [
     {
       title: 'Total Profiles',
       value: profiles.length,
@@ -66,10 +43,30 @@ const Dashboard = () => {
       icon: <ChartBarIcon className="w-6 h-6 text-indigo-600" />,
       trend: { value: 5, isPositive: true }
     }
-  ];
+  ], [profiles]);
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="p-6 space-y-8">
+        {/* Stats Cards Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, index) => (
+            <StatCardSkeleton key={index} />
+          ))}
+        </div>
+
+        {/* Charts Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ChartSkeleton />
+          <ChartSkeleton />
+        </div>
+
+        {/* Full Width Charts Skeleton */}
+        <ChartSkeleton />
+        <ChartSkeleton />
+        <ChartSkeleton />
+      </div>
+    );
   }
 
   return (
@@ -85,77 +82,19 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-4">Profile Statistics</h2>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={profiles}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" hide={true} />
-                <YAxis
-                  domain={[
-                    (dataMin: number) => Math.floor(dataMin - 1),
-                    (dataMax: number) => Math.ceil(dataMax + 1)
-                  ]}
-                  ticks={(() => {
-                    const years = profiles.map(p => p.education.completionYear);
-                    const minYear = Math.min(...years);
-                    const maxYear = Math.max(...years);
-                    const yearRange = maxYear - minYear;
-                    const stepSize = Math.ceil(yearRange / 5); // Show approximately 5 ticks
-                    
-                    const ticks = [];
-                    for (let year = minYear; year <= maxYear; year += stepSize) {
-                      ticks.push(year);
-                    }
-                    // Ensure the max year is included
-                    if (ticks[ticks.length - 1] !== maxYear) {
-                      ticks.push(maxYear);
-                    }
-                    return ticks;
-                  })()}
-                />
-                <Tooltip />
-                <Legend />
-                <Bar 
-                  dataKey="education.completionYear" 
-                  fill="#8884d8" 
-                  name="Completion Year"
-                  radius={[4, 4, 0, 0]} // Rounded corners on top
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <ProfileStatistics profiles={profiles} loading={loading} />
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-4">Degree Distribution</h2>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={CustomLabel}
-                >
-                  {pieData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          <DegreeDistribution profiles={profiles} loading={loading} />
         </div>
       </div>
 
       {/* Full Width Charts */}
-      <EducationTrends profiles={profiles} />
-      <EducationMatrix profiles={profiles} />
-      <ProfileTimeline profiles={profiles} />
+      <EducationTrends profiles={profiles} loading={loading} />
+      <EducationMatrix profiles={profiles} loading={loading} />
+      <ProfileTimeline profiles={profiles} loading={loading} />
     </div>
   );
 };
