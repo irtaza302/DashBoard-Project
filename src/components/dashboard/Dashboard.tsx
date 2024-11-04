@@ -89,25 +89,38 @@ const Dashboard = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={profiles}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="name" hide={true} />
                 <YAxis
                   domain={[
                     (dataMin: number) => Math.floor(dataMin - 1),
                     (dataMax: number) => Math.ceil(dataMax + 1)
                   ]}
-                  ticks={Array.from(
-                    { length: 10 },
-                    (_, i) => {
-                      const min = Math.min(...profiles.map(p => p.education.completionYear));
-                      const max = Math.max(...profiles.map(p => p.education.completionYear));
-                      const step = Math.ceil((max - min) / 8);
-                      return min + (i * step);
+                  ticks={(() => {
+                    const years = profiles.map(p => p.education.completionYear);
+                    const minYear = Math.min(...years);
+                    const maxYear = Math.max(...years);
+                    const yearRange = maxYear - minYear;
+                    const stepSize = Math.ceil(yearRange / 5); // Show approximately 5 ticks
+                    
+                    const ticks = [];
+                    for (let year = minYear; year <= maxYear; year += stepSize) {
+                      ticks.push(year);
                     }
-                  )}
+                    // Ensure the max year is included
+                    if (ticks[ticks.length - 1] !== maxYear) {
+                      ticks.push(maxYear);
+                    }
+                    return ticks;
+                  })()}
                 />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="education.completionYear" fill="#8884d8" name="Completion Year" />
+                <Bar 
+                  dataKey="education.completionYear" 
+                  fill="#8884d8" 
+                  name="Completion Year"
+                  radius={[4, 4, 0, 0]} // Rounded corners on top
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
