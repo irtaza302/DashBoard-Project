@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
 import { profileSchema, type ProfileFormData } from '../schemas/profile.schema';
 import { Dialog } from '@headlessui/react';
-import { PlusIcon } from '@heroicons/react/24/outline';;
+import { PlusIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';;
 import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 import { ProfileForm } from '../components/profile/ProfileForm';
 import { formatDate } from '../utils/date';
@@ -16,6 +16,7 @@ import {
   useDeleteProfileMutation
 } from '../store/api/profileApi';
 import { ProfileTable } from '../components/profile/ProfileTable';
+import { downloadProfilePDF, downloadMultipleProfilesPDF } from '../utils/pdf';
 
 const Profile = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -160,17 +161,35 @@ const Profile = () => {
                         Manage and update user profiles
                     </p>
                 </div>
-                <button
-                    onClick={() => {
-                        setEditingProfile(null);
-                        reset();
-                        setIsOpen(true);
-                    }}
-                    className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 shadow-sm hover:shadow-md"
-                >
-                    <PlusIcon className="w-5 h-5 mr-2" />
-                    <span>{PROFILE_CONSTANTS.BUTTON_TEXT.ADD_PROFILE}</span>
-                </button>
+                <div className="flex space-x-4">
+                    <button
+                        onClick={async () => {
+                            try {
+                                await downloadMultipleProfilesPDF(profiles);
+                                toast.success('All profiles downloaded successfully');
+                            } catch (error) {
+                                console.error('Download error:', error);
+                                toast.error('Failed to download profiles');
+                            }
+                        }}
+                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                        disabled={profiles.length === 0}
+                    >
+                        <DocumentArrowDownIcon className="w-5 h-5 mr-2" />
+                        <span>Download All ({profiles.length})</span>
+                    </button>
+                    <button
+                        onClick={() => {
+                            setEditingProfile(null);
+                            reset();
+                            setIsOpen(true);
+                        }}
+                        className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+                    >
+                        <PlusIcon className="w-5 h-5 mr-2" />
+                        <span>{PROFILE_CONSTANTS.BUTTON_TEXT.ADD_PROFILE}</span>
+                    </button>
+                </div>
             </div>
 
             {/* Table Section */}

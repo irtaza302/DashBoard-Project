@@ -20,7 +20,8 @@
     },
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "strictFunctionTypes": true
+    "strictFunctionTypes": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
   },
   "include": ["src"],
   "references": [
