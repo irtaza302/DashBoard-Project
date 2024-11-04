@@ -41,7 +41,7 @@ export const AUTH_CONSTANTS = {
     BUTTON_TEXT: 'Sign in',
     REMEMBER_ME: 'Remember me',
     FORGOT_PASSWORD: 'Forgot password?',
-    SIGNUP_PROMPT: 'Don't have an account?',
+    SIGNUP_PROMPT: "Don't have an account?",
     SIGNUP_LINK: 'Sign up now',
     WELCOME_TITLE: 'Welcome Back!',
     WELCOME_SUBTITLE: 'Sign in to access your dashboard and manage your profiles efficiently',
