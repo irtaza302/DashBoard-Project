@@ -11,11 +11,19 @@ export const profileApi = createApi({
   tagTypes: ['Profile'],
   baseQuery: fetchBaseQuery({ 
     baseUrl,
-    timeout: API_CONSTANTS.TIMEOUT
+    timeout: API_CONSTANTS.TIMEOUT,
+    credentials: 'include'
   }),
   endpoints: (builder) => ({
     getProfiles: builder.query<ProfileFormData[], void>({
-      query: () => API_CONSTANTS.ENDPOINTS.PROFILES.BASE,
+      query: () => ({
+        url: API_CONSTANTS.ENDPOINTS.PROFILES.BASE,
+        method: 'GET',
+      }),
+      transformErrorResponse: (response) => {
+        console.error('API Error:', response);
+        return response;
+      },
       providesTags: ['Profile']
     }),
     

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useGetProfilesQuery } from '../../store/api/profileApi';
 import { StatCard } from './StatCard';
 import { StatCardSkeleton } from './StatCardSkeleton';

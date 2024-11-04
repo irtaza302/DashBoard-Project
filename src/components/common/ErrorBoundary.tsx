@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
+import { useRouteError} from 'react-router-dom';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 
 interface Props {

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import RequireAuth from './components/RequireAuth';
 import { PageLoader } from './components/common/PageLoader';
+import { ContentLoader } from './components/common/ContentLoader';
 import { Provider } from 'react-redux';
 import { store } from './store';
 
@@ -43,9 +44,30 @@ function App() {
                     }
                   >
                     <Route index element={<Navigate to="/dashboard" replace />} />
-                    <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="about" element={<About />} />
+                    <Route 
+                      path="dashboard" 
+                      element={
+                        <Suspense fallback={<ContentLoader />}>
+                          <Dashboard />
+                        </Suspense>
+                      } 
+                    />
+                    <Route 
+                      path="profile" 
+                      element={
+                        <Suspense fallback={<ContentLoader />}>
+                          <Profile />
+                        </Suspense>
+                      } 
+                    />
+                    <Route 
+                      path="about" 
+                      element={
+                        <Suspense fallback={<ContentLoader />}>
+                          <About />
+                        </Suspense>
+                      } 
+                    />
                   </Route>
                   <Route path="*" element={<Navigate to="/login" replace />} />
                 </Routes>
