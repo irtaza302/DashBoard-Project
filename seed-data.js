@@ -15,7 +15,7 @@ const dummyProfiles = [
       completionYear: 2023
     },
     studentCard: "STU2023001",
-    expiryDate: "2025-06-30T00:00:00.000Z",
+    expiryDate: new Date("2025-06-30"),
     portfolio: "https://emmathompson.dev",
     githubLink: "https://github.com/emmathompson"
   },
@@ -28,7 +28,7 @@ const dummyProfiles = [
       degree: "BSc Computer Science",
       completionYear: 2024
     },
-    expiryDate: "2026-05-15T00:00:00.000Z",
+    expiryDate: new Date("2026-05-15"),
     studentCard: "STU2024002",
     portfolio: "https://alexchen.dev",
     githubLink: "https://github.com/alexchen"
@@ -42,7 +42,7 @@ const dummyProfiles = [
       degree: "MSc Data Science",
       completionYear: 2025
     },
-    expiryDate: "2027-08-20T00:00:00.000Z",
+    expiryDate: new Date("2027-08-20"),
     studentCard: "STU2025003",
     portfolio: "https://sofiarodriguez.ai",
     githubLink: "https://github.com/sofiar"
@@ -56,7 +56,7 @@ const dummyProfiles = [
       degree: "BSc Web Development",
       completionYear: 2024
     },
-    expiryDate: "2026-12-31T00:00:00.000Z",
+    expiryDate: new Date("2026-12-31"),
     studentCard: "STU2024004",
     portfolio: "https://jameswilson.tech",
     githubLink: "https://github.com/jwilson"
@@ -70,7 +70,7 @@ const dummyProfiles = [
       degree: "MSc Artificial Intelligence",
       completionYear: 2023
     },
-    expiryDate: "2025-09-30T00:00:00.000Z",
+    expiryDate: new Date("2025-09-30"),
     studentCard: "STU2023005",
     portfolio: "https://aishapatel.dev",
     githubLink: "https://github.com/aishap"
@@ -84,7 +84,7 @@ const dummyProfiles = [
       degree: "BSc Computer Science",
       completionYear: 2024
     },
-    expiryDate: "2026-07-15T00:00:00.000Z",
+    expiryDate: new Date("2026-07-15"),
     studentCard: "STU2024006",
     portfolio: "https://lucasschmidt.cloud",
     githubLink: "https://github.com/lschmidt"
@@ -98,7 +98,7 @@ const dummyProfiles = [
       degree: "MSc Software Engineering",
       completionYear: 2023
     },
-    expiryDate: "2025-11-30T00:00:00.000Z",
+    expiryDate: new Date("2025-11-30"),
     studentCard: "STU2023007",
     portfolio: "https://mayajohnson.dev",
     githubLink: "https://github.com/mayaj"
@@ -112,7 +112,7 @@ const dummyProfiles = [
       degree: "MSc Data Science",
       completionYear: 2025
     },
-    expiryDate: "2027-04-15T00:00:00.000Z",
+    expiryDate: new Date("2027-04-15"),
     studentCard: "STU2025008",
     portfolio: "https://danielkim.data",
     githubLink: "https://github.com/dkim"
@@ -127,7 +127,7 @@ const dummyProfiles = [
       completionYear: 2000
     },
     studentCard: "2113123123",
-    expiryDate: "2024-12-26T00:00:00.000Z",
+    expiryDate: new Date("2024-12-26"),
     portfolio: "",
     githubLink: ""
   },
@@ -141,33 +141,48 @@ const dummyProfiles = [
       completionYear: 2024
     },
     studentCard: "F2010232321",
-    expiryDate: "2024-10-31T00:00:00.000Z",
+    expiryDate: new Date("2024-10-31"),
     portfolio: "",
     githubLink: ""
   }
 ];
 
 async function seedDatabase() {
+  let connection;
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('Connected to MongoDB');
+    // Connect to MongoDB with options
+    connection = await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    
+    console.log('🌟 Connected to MongoDB');
 
     // Clear existing data
-    await Profile.deleteMany({});
-    console.log('Cleared existing profiles');
+    const deletedCount = await Profile.deleteMany({});
+    console.log(`🧹 Cleared ${deletedCount.deletedCount} existing profiles`);
 
     // Insert new data
-    const insertedProfiles = await Profile.insertMany(dummyProfiles);
-    console.log(`Successfully inserted ${insertedProfiles.length} profiles`);
-
-    // Log the first profile as a sample
-    console.log('Sample profile:', insertedProfiles[0]);
+    const insertedProfiles = await Profile.insertMany(dummyProfiles, { 
+      ordered: true,
+      lean: true 
+    });
+    
+    console.log(`✅ Successfully inserted ${insertedProfiles.length} profiles`);
+    console.log('\n📊 Sample profile:');
+    console.log(JSON.stringify(insertedProfiles[0], null, 2));
 
   } catch (error) {
-    console.error('Error seeding data:', error);
+    console.error('❌ Error seeding data:', error);
+    process.exit(1);
   } finally {
-    await mongoose.connection.close();
-    console.log('Database connection closed');
+    if (connection) {
+      await mongoose.connection.close();
+      console.log('📡 Database connection closed');
+    }
+    process.exit(0);
   }
 }
 
