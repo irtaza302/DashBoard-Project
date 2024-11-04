@@ -9,6 +9,7 @@ import { EducationMatrix } from './EducationMatrix';
 import { ProfileStatistics } from './ProfileStatistics';
 import { DegreeDistribution } from './DegreeDistribution';
 import { UsersIcon, AcademicCapIcon, ClockIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { ComponentErrorBoundary } from '../common/ComponentErrorBoundary';
 
 const Dashboard = () => {
   const { data: profiles = [], isLoading } = useGetProfilesQuery();
@@ -59,29 +60,31 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6 space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <StatCard key={index} {...stat} />
-        ))}
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4">Profile Statistics</h2>
-          <ProfileStatistics profiles={profiles} loading={isLoading} />
+    <ComponentErrorBoundary component="Dashboard">
+      <div className="p-6 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {stats.map((stat, index) => (
+            <StatCard key={index} {...stat} />
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-4">Profile Statistics</h2>
+            <ProfileStatistics profiles={profiles} loading={isLoading} />
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-4">Degree Distribution</h2>
+            <DegreeDistribution profiles={profiles} loading={isLoading} />
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4">Degree Distribution</h2>
-          <DegreeDistribution profiles={profiles} loading={isLoading} />
-        </div>
+        <EducationTrends profiles={profiles} loading={isLoading} />
+        <EducationMatrix profiles={profiles} loading={isLoading} />
+        <ProfileTimeline profiles={profiles} loading={isLoading} />
       </div>
-
-      <EducationTrends profiles={profiles} loading={isLoading} />
-      <EducationMatrix profiles={profiles} loading={isLoading} />
-      <ProfileTimeline profiles={profiles} loading={isLoading} />
-    </div>
+    </ComponentErrorBoundary>
   );
 };
 
