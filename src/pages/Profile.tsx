@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
 import { profileSchema, type ProfileFormData } from '../schemas/profile.schema';
 import { Dialog } from '@headlessui/react';
-import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';;
+import { PlusIcon } from '@heroicons/react/24/outline';;
 import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 import { ProfileForm } from '../components/profile/ProfileForm';
 import { formatDate } from '../utils/date';
