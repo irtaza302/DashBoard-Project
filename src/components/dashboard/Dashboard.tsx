@@ -9,10 +9,14 @@ import { EducationMatrix } from './EducationMatrix';
 import { ProfileStatistics } from './ProfileStatistics';
 import { DegreeDistribution } from './DegreeDistribution';
 import { UsersIcon, AcademicCapIcon, ClockIcon, ChartBarIcon } from '@heroicons/react/24/outline';
-import { ComponentErrorBoundary } from '../common/ComponentErrorBoundary';
+import { ErrorBoundary } from '../common/ErrorBoundary';
 
 const Dashboard = () => {
-  const { data: profiles = [], isLoading } = useGetProfilesQuery();
+  const { data: profiles = [], isLoading, error } = useGetProfilesQuery();
+
+  if (error) {
+    return <div>Error loading profiles: {error.toString()}</div>;
+  }
 
   const stats = useMemo(() => [
     {
@@ -60,7 +64,7 @@ const Dashboard = () => {
   }
 
   return (
-    <ComponentErrorBoundary component="Dashboard">
+    <ErrorBoundary>
       <div className="p-6 space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
@@ -84,7 +88,7 @@ const Dashboard = () => {
         <EducationMatrix profiles={profiles} loading={isLoading} />
         <ProfileTimeline profiles={profiles} loading={isLoading} />
       </div>
-    </ComponentErrorBoundary>
+    </ErrorBoundary>
   );
 };
 
