@@ -10,8 +10,15 @@ dotenv.config();
 
 const app = express();
 
-// Basic CORS setup for development
-app.use(cors());
+// CORS configuration based on environment
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://your-vercel-domain.vercel.app']
+    : ['http://localhost:5174', 'http://localhost:5173'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
@@ -72,21 +79,38 @@ app.delete('/api/profiles/:id', async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
-
-// Handle process termination
-process.on('SIGINT', async () => {
+// Modified server startup
+const startServer = async () => {
+  const port = process.env.PORT || 5000;
   try {
-    await mongoose.connection.close();
-    console.log('MongoDB connection closed through app termination');
-    process.exit(0);
-  } catch (err) {
-    console.error('Error during shutdown:', err);
-    process.exit(1);
+    const server = app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      console.log('SIGTERM received. Shutting down gracefully...');
+      server.close(async () => {
+        await mongoose.connection.close();
+        console.log('Process terminated');
+        process.exit(0);
+      });
+    });
+
+  } catch (error) {
+    if (error.code === 'EADDRINUSE') {
+      console.log(`Port ${port} is busy, trying ${port + 1}`);
+      startServer(port + 1);
+    } else {
+      console.error('Server error:', error);
+      process.exit(1);
+    }
   }
-});
+};
+
+// Only start the server if not in production (Vercel)
+if (process.env.NODE_ENV !== 'production') {
+  startServer();
+}
 
 export default app; 
