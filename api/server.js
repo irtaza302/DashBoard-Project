@@ -10,16 +10,19 @@ const app = express();
 
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
-    ? 'https://dash-board-project-ten.vercel.app'
+    ? ['https://dash-board-project-ten.vercel.app', 'https://dash-board-project-ten.vercel.app']
     : ['http://localhost:5173', 'http://localhost:5174'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 };
 
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Add preflight handling
+app.options('*', cors(corsOptions));
 
 // Connect to MongoDB
 connectDB();
