@@ -15,11 +15,22 @@ const profileSchema = new mongoose.Schema({
   name: String,
   email: String,
   phone: String,
-  // Add other fields as needed
 });
+
 const Profile = mongoose.model('Profile', profileSchema);
 
 app.use(cors());
 app.use(express.json());
 
-// Rest of your routes remain the same
+// API Routes
+app.get('/api/profiles', async (req, res) => {
+  try {
+    const profiles = await Profile.find();
+    res.json(profiles);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch profiles' });
+  }
+});
+
+// Export the app
+module.exports = app;
