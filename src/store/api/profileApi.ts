@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
-const baseUrl = import.meta.env.VITE_API_URL || 
-  (process.env.NODE_ENV === 'production'
-    ? 'https://dash-board-project-ten.vercel.app/api'
-    : 'http://localhost:5000/api');
+const baseUrl = import.meta.env.VITE_API_URL;
+
+if (!baseUrl) {
+  throw new Error('VITE_API_URL environment variable is not defined');
+}
 
 export const profileApi = createApi({
   reducerPath: 'profileApi',
@@ -19,7 +20,14 @@ export const profileApi = createApi({
   endpoints: (builder) => ({
     getProfiles: builder.query<ProfileFormData[], void>({
       query: () => '/profiles',
-      providesTags: ['Profile']
+      providesTags: ['Profile'],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          console.error('API Error:', error);
+        }
+      }
     }),
     createProfile: builder.mutation<ProfileFormData, Partial<ProfileFormData>>({
       query: (profile) => ({

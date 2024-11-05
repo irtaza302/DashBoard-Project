@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { Profile } from './models/profile.js';
 import connectDB from '../config/database.js';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -36,6 +37,17 @@ app.options('*', cors(corsOptions));
 // Connect to MongoDB
 connectDB();
 
+// Add this error handling middleware before your routes
+app.use((req, res, next) => {
+  if (!mongoose.connection.readyState) {
+    return res.status(503).json({ 
+      error: 'Database connection not ready',
+      status: 'error'
+    });
+  }
+  next();
+});
+
 // API Routes
 app.get('/api/profiles', async (req, res) => {
   try {
@@ -43,7 +55,10 @@ app.get('/api/profiles', async (req, res) => {
     res.json(profiles);
   } catch (error) {
     console.error('Fetch profiles error:', error);
-    res.status(500).json({ error: 'Failed to fetch profiles' });
+    res.status(error.status || 500).json({ 
+      error: 'Failed to fetch profiles',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 

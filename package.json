@@ -7,13 +7,15 @@
     "preserver": "node scripts/kill-port.js",
     "server": "node api/server.js",
     "dev": "vite",
-    "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
+    "dev:api": "node api/server.js",
+    "dev:full": "concurrently \"npm run dev\" \"npm run dev:api\"",
     "build": "tsc && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "vite preview --port 5173",
     "typecheck": "tsc --noEmit",
     "seed": "node seed-data.js",
-    "vercel-build": "npm run build"
+    "vercel-build": "npm run build",
+    "start": "node api/server.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
