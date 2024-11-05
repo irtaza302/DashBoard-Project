@@ -13,7 +13,7 @@ const app = express();
 
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? 'https://dash-board-project-ten.vercel.app'
+    ? ['https://dash-board-project-ten.vercel.app', 'https://dash-board-project-api.vercel.app']
     : 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
