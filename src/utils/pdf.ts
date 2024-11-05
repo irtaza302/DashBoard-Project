@@ -4,18 +4,10 @@ import { ProfileFormData } from '../schemas/profile.schema';
 import { ProfilePDF } from '../components/profile/ProfilePDF';
 import { createElement } from 'react';
 
-interface PDFOptions {
-  compress?: boolean;
-}
-
 export const downloadProfilePDF = async (profileData: ProfileFormData): Promise<void> => {
   if (!profileData) throw new Error('Profile data is required');
 
   try {
-    const options: PDFOptions = {
-      compress: true
-    };
-    
     const pdfDocument = createElement(ProfilePDF, { profile: profileData });
     const blob = await pdf(pdfDocument).toBlob();
     
