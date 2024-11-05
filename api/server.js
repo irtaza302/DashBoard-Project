@@ -32,5 +32,4 @@ app.get('/api/profiles', async (req, res) => {
   }
 });
 
-// Export the app
-module.exports = app;
+export default app;
