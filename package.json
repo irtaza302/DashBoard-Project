@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "preserver": "node scripts/kill-port.js",
+    "server": "node server.js",
     "dev": "vite",
+    "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "build": "tsc && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "node server.js",
-    "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "typecheck": "tsc --noEmit",
     "seed": "node seed-data.js",
     "vercel-build": "npm run build"

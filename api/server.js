@@ -8,17 +8,8 @@ dotenv.config();
 
 const app = express();
 
-// CORS configuration based on environment
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://dash-board-project-ten.vercel.app/']
-    : ['http://localhost:5174', 'http://localhost:5173'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
+// Middleware
+app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
@@ -32,16 +23,16 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API Routes
-app.get('/profiles', async (req, res) => {
-  try {
-    const profiles = await Profile.find();
-    res.json(profiles);
-  } catch (error) {
-    console.error('Fetch profiles error:', error);
-    res.status(500).json({ error: 'Failed to fetch profiles' });
-  }
-});
+    // API Routes
+    app.get('/profiles', async (req, res) => {
+      try {
+        const profiles = await Profile.find();
+        res.json(profiles);
+      } catch (error) {
+        console.error('Fetch profiles error:', error);
+        res.status(500).json({ error: 'Failed to fetch profiles' });
+      }
+    });
 
 app.post('/api/profiles', async (req, res) => {
   try {
