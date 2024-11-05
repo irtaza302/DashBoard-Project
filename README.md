@@ -62,7 +62,7 @@ A modern, full-stack web application built with MongoDB, Express.js, React, and 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/gas-app.git
+   git clone https://github.com/irtaza302/DashBoard-Project.git
    cd gas-app
    ```
 
@@ -138,4 +138,4 @@ This project is licensed under the MIT License.
 
 ## 📧 Contact
 
-For any inquiries, please contact [support@gasapp.com](mailto:support@gasapp.com).
+For any inquiries, please contact [malikirtza302@hotmail.com](malikiraza96@gmail.com).
