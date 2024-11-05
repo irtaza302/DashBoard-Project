@@ -1,7 +1,7 @@
 export const API_CONSTANTS = {
   BASE_URL: {
     DEVELOPMENT: 'http://localhost:5000/api',
-    PRODUCTION: '/api'
+    PRODUCTION: 'https://dash-board-project-one.vercel.app/api'
   },
   ENDPOINTS: {
     PROFILES: {

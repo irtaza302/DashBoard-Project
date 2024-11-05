@@ -1,14 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
-const baseUrl = process.env.NODE_ENV === 'production' 
-  ? '/api'
-  : 'http://localhost:5000/api';
+const getBaseUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return '/api';
+  }
+  // Try port 5000 first, then 5001 if needed
+  return 'http://localhost:5000/api';
+};
 
 export const profileApi = createApi({
   reducerPath: 'profileApi',
   tagTypes: ['Profile'],
-  baseQuery: fetchBaseQuery({ baseUrl }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: getBaseUrl(),
+    credentials: 'include'
+  }),
   endpoints: (builder) => ({
     getProfiles: builder.query<ProfileFormData[], void>({
       query: () => 'profiles',
