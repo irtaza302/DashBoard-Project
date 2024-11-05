@@ -4,10 +4,7 @@ export const API_CONSTANTS = {
     PRODUCTION: 'https://dash-board-project-seven.vercel.app/api'
   },
   ENDPOINTS: {
-    PROFILES: {
-      BASE: '/profiles',
-      BY_ID: (id: string) => `/profiles/${id}`
-    }
+    PROFILES: '/profiles',
   },
   TIMEOUT: 10000
 } as const; 

@@ -1,19 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
-const getBaseUrl = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return '/api';
-  }
-  // Try port 5000 first, then 5001 if needed
-  return 'http://localhost:5000/api';
-};
+const baseUrl = process.env.NODE_ENV === 'production'
+  ? 'https://dash-board-project-seven.vercel.app/api'
+  : 'http://localhost:5000/api';
 
 export const profileApi = createApi({
   reducerPath: 'profileApi',
   tagTypes: ['Profile'],
   baseQuery: fetchBaseQuery({ 
-    baseUrl: getBaseUrl(),
+    baseUrl,
     credentials: 'include'
   }),
   endpoints: (builder) => ({
