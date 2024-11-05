@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "preserver": "node scripts/kill-port.js",
-    "server": "node server.js",
+    "server": "node api/server.js",
     "dev": "vite",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "build": "tsc && vite build",
