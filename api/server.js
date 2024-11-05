@@ -123,10 +123,10 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT || 5000;
 
-// Export the app before starting the server
+// Export the app for serverless deployment
 export default app;
 
-// Only start the server if not in production
+// Only start the server in development
 if (process.env.NODE_ENV !== 'production') {
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
