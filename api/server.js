@@ -8,10 +8,11 @@ dotenv.config();
 
 const app = express();
 
+// Add OPTIONS handling for preflight requests
+app.options('*', cors());
+
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production'
-    ? 'https://dash-board-project-ten.vercel.app'
-    : ['http://localhost:5173', 'http://localhost:5174'],
+  origin: ['https://dash-board-project-ten.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
@@ -23,8 +24,8 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
-// API Routes without /api prefix
-app.get('/profiles', async (req, res) => {
+// API Routes
+app.get('/api/profiles', async (req, res) => {
   try {
     const profiles = await Profile.find();
     res.json(profiles);
@@ -34,7 +35,7 @@ app.get('/profiles', async (req, res) => {
   }
 });
 
-app.post('/profiles', async (req, res) => {
+app.post('/api/profiles', async (req, res) => {
   try {
     console.log('Received profile data:', req.body);
     const newProfile = new Profile(req.body);
@@ -50,7 +51,7 @@ app.post('/profiles', async (req, res) => {
   }
 });
 
-app.put('/profiles/:id', async (req, res) => {
+app.put('/api/profiles/:id', async (req, res) => {
   try {
     const updatedProfile = await Profile.findByIdAndUpdate(
       req.params.id,
@@ -66,7 +67,7 @@ app.put('/profiles/:id', async (req, res) => {
   }
 });
 
-app.delete('/profiles/:id', async (req, res) => {
+app.delete('/api/profiles/:id', async (req, res) => {
   try {
     await Profile.findByIdAndDelete(req.params.id);
     res.status(204).send();
