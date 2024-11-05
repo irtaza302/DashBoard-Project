@@ -8,8 +8,17 @@ dotenv.config();
 
 const app = express();
 
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? 'https://dash-board-project-ten.vercel.app'
+    : ['http://localhost:5173', 'http://localhost:5174'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
