@@ -2,15 +2,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
 const baseUrl = process.env.NODE_ENV === 'production'
-  ? 'https://dash-board-project-ten.vercel.app'
-  : 'http://localhost:5000';
+  ? 'https://dash-board-project-ten.vercel.app/api'
+  : 'http://localhost:5000/api';
 
 export const profileApi = createApi({
   reducerPath: 'profileApi',
   tagTypes: ['Profile'],
   baseQuery: fetchBaseQuery({ 
     baseUrl,
-    credentials: 'include',
     prepareHeaders: (headers) => {
       headers.set('Content-Type', 'application/json');
       return headers;
@@ -18,12 +17,12 @@ export const profileApi = createApi({
   }),
   endpoints: (builder) => ({
     getProfiles: builder.query<ProfileFormData[], void>({
-      query: () => '/api/profiles',
+      query: () => '/profiles',
       providesTags: ['Profile']
     }),
     createProfile: builder.mutation<ProfileFormData, Partial<ProfileFormData>>({
       query: (profile) => ({
-        url: '/api/profiles',
+        url: '/profiles',
         method: 'POST',
         body: profile,
       }),
@@ -34,7 +33,7 @@ export const profileApi = createApi({
       { id: string; profile: Partial<ProfileFormData> }
     >({
       query: ({ id, profile }) => ({
-        url: `/api/profiles/${id}`,
+        url: `/profiles/${id}`,
         method: 'PUT',
         body: profile,
       }),
@@ -42,7 +41,7 @@ export const profileApi = createApi({
     }),
     deleteProfile: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/api/profiles/${id}`,
+        url: `/profiles/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Profile']

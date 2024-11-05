@@ -9,11 +9,14 @@ dotenv.config();
 const app = express();
 
 // Add OPTIONS handling for preflight requests
-app.options('*', cors());
+// app.options('*', cors());
 
 const corsOptions = {
-  origin: '*',  // Allow all origins in production
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'https://dash-board-project-ten.vercel.app'
+    : 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 };
 
