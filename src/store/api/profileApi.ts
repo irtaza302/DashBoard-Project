@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
-const baseUrl = process.env.NODE_ENV === 'production'
-  ? 'https://dash-board-project-api.vercel.app/api'
-  : 'http://localhost:5000/api';
+const baseUrl = import.meta.env.VITE_API_URL || 
+  (process.env.NODE_ENV === 'production'
+    ? 'https://dash-board-project-ten.vercel.app/api'
+    : 'http://localhost:5000/api');
 
 export const profileApi = createApi({
   reducerPath: 'profileApi',

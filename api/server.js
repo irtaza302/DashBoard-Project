@@ -8,20 +8,30 @@ dotenv.config();
 
 const app = express();
 
-// Add OPTIONS handling for preflight requests
-// app.options('*', cors());
-
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://dash-board-project-ten.vercel.app', 'https://dash-board-project-api.vercel.app']
-    : 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'https://dash-board-project-ten.vercel.app',
+      'http://localhost:5173',
+      'http://localhost:5000'
+    ];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Add OPTIONS preflight handler
+app.options('*', cors(corsOptions));
 
 // Connect to MongoDB
 connectDB();
@@ -76,6 +86,15 @@ app.delete('/api/profiles/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete profile' });
   }
+});
+
+// Add this after your routes
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+  });
 });
 
 const port = process.env.PORT || 5000;
