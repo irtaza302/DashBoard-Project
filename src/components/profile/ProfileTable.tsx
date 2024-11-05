@@ -8,9 +8,11 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 import { ProfileFormData } from '../../schemas/profile.schema';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import { formatDate } from '../../utils/date';
 import { useState, useEffect } from 'react';
+import { downloadProfilePDF } from '../../utils/pdf';
+import { toast } from 'react-hot-toast';
 
 interface ProfileTableProps {
   data: ProfileFormData[];
@@ -63,12 +65,29 @@ export const ProfileTable = ({
           <button
             onClick={() => onEdit(row.original)}
             className="text-indigo-600 hover:text-indigo-900 transition-colors duration-150"
+            title="Edit Profile"
           >
             <PencilIcon className="h-5 w-5" />
           </button>
           <button
+            onClick={async () => {
+              try {
+                await downloadProfilePDF(row.original);
+                toast.success('Profile downloaded successfully');
+              } catch (error) {
+                console.error('Download error:', error);
+                toast.error('Failed to download profile');
+              }
+            }}
+            className="text-green-600 hover:text-green-900 transition-colors duration-150"
+            title="Download PDF"
+          >
+            <DocumentArrowDownIcon className="h-5 w-5" />
+          </button>
+          <button
             onClick={() => onDelete(row.original)}
-            className="text-red-600 hover:text-red-900 transition-colors duration-200"
+            className="text-red-600 hover:text-red-900 transition-colors duration-150"
+            title="Delete Profile"
           >
             <TrashIcon className="h-5 w-5" />
           </button>
