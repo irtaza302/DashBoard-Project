@@ -24,7 +24,7 @@ app.get('/health', (req, res) => {
 });
 
     // API Routes
-    app.get('/profiles', async (req, res) => {
+    app.get('/api/profiles', async (req, res) => {
       try {
         const profiles = await Profile.find();
         res.json(profiles);

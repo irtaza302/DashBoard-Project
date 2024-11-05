@@ -13,7 +13,7 @@ const app = express();
 // CORS configuration based on environment
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
-    ? ['https://your-vercel-domain.vercel.app']
+    ? ['https://dash-board-project-ten.vercel.app']
     : ['http://localhost:5174', 'http://localhost:5173'],
   credentials: true
 };
