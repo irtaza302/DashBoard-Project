@@ -1,50 +1,141 @@
-# React + TypeScript + Vite
+# Gas App - Advanced MERN Stack Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, full-stack web application built with MongoDB, Express.js, React, and Node.js (MERN), featuring advanced profile management capabilities and real-time analytics.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Advanced Profile Management**
+  - CRUD operations with real-time updates
+  - PDF generation and bulk download
+  - Form validation using Zod
+  - File upload support
+  - Search and filtering capabilities
 
-## Expanding the ESLint configuration
+- **Rich Data Visualization**
+  - Interactive charts using Recharts
+  - Profile timeline analysis
+  - Education matrix visualization
+  - Real-time statistics
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Modern Tech Stack**
+  - React 18 with TypeScript
+  - Redux Toolkit for state management
+  - RTK Query for API integration
+  - Tailwind CSS for styling
+  - Headless UI components
 
-- Configure the top-level `parserOptions` property like this:
+- **Performance Optimized**
+  - Code splitting and lazy loading
+  - Memoized components
+  - Optimistic updates
+  - Progressive Web App (PWA) support
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 🛠️ Technical Stack
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Frontend
+- React 18.3
+- TypeScript
+- Redux Toolkit & RTK Query
+- React Router v6
+- React Hook Form
+- Zod Validation
+- Tailwind CSS
+- Headless UI
+- React PDF
+- Recharts
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Backend
+- Node.js
+- Express.js
+- MongoDB with Mongoose
+- CORS
+- dotenv
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### Development Tools
+- Vite
+- ESLint
+- TypeScript ESLint
+- Prettier
+- Concurrently
+
+## 🚦 Getting Started
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/gas-app.git
+   cd gas-app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   - Create a `.env` file in the root directory.
+   - Add the following environment variables:
+     ```
+     PORT=5000
+     MONGODB_URI=your_mongodb_connection_string
+     ```
+
+4. **Seed the database (optional)**
+   ```bash
+   npm run seed
+   ```
+
+5. **Run the application**
+   - For development:
+     ```bash
+     npm run dev:full
+     ```
+   - For production build:
+     ```bash
+     npm run build
+     npm run server
+     ```
+
+6. **Access the application**
+   - Open your browser and go to `http://localhost:5000` to access the application.
+
+## 📚 Documentation
+
+- **API Endpoints**
+  - `/api/profiles` - CRUD operations for profiles
+  - `/health` - Health check endpoint
+
+- **Frontend Routes**
+  - `/dashboard` - Main dashboard with analytics
+  - `/profile` - Profile management
+  - `/about` - About page
+
+## 🧪 Testing
+
+- Run ESLint for code quality checks:
+  ```bash
+  npm run lint
+  ```
+
+- TypeScript type checking:
+  ```bash
+  npm run typecheck
+  ```
+
+## 📦 Deployment
+
+- The application is configured for deployment on Vercel. Use the `vercel-build` script for building the project:
+  ```bash
+  npm run vercel-build
+  ```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 📧 Contact
+
+For any inquiries, please contact [support@gasapp.com](mailto:support@gasapp.com).
