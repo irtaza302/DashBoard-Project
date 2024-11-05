@@ -12,9 +12,8 @@ const app = express();
 app.options('*', cors());
 
 const corsOptions = {
-  origin: ['https://dash-board-project-ten.vercel.app'],
+  origin: '*',  // Allow all origins in production
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 };
 
