@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
 const baseUrl = import.meta.env.PROD 
-  ? 'https://dash-board-project-uoxr508z7-irtaza-maliks-projects.vercel.app/api'
+  ? 'https://dash-board-project-ten.vercel.app/api'
   : 'http://localhost:5000/api';
 
 if (!baseUrl) {

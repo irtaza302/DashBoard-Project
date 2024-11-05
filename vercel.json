@@ -27,7 +27,6 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production",
-    "MONGODB_URI": "mongodb+srv://malikirtaza302:GiBT8ireb7dVelsv@cluster0.yxagc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "NODE_ENV": "production"
   }
 } 
