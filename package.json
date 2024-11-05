@@ -14,8 +14,8 @@
     "preview": "vite preview --port 5173",
     "typecheck": "tsc --noEmit",
     "seed": "node seed-data.js",
-    "vercel-build": "npm run build",
-    "start": "node api/server.js"
+    "vercel-build": "npm run build && npm run start",
+    "start": "NODE_ENV=production node api/server.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",

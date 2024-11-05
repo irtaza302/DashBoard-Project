@@ -114,11 +114,12 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT || 5000;
 
-// Only start the server if not running on Vercel
+// Export the app before starting the server
+export default app;
+
+// Only start the server if not in production
 if (process.env.NODE_ENV !== 'production') {
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
-}
-
-export default app; 
+} 
