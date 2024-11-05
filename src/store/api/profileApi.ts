@@ -14,7 +14,7 @@ export const profileApi = createApi({
   }),
   endpoints: (builder) => ({
     getProfiles: builder.query<ProfileFormData[], void>({
-      query: () => 'profiles',
+      query: () => '/api/profiles',
       providesTags: ['Profile']
     }),
     createProfile: builder.mutation<ProfileFormData, Partial<ProfileFormData>>({
