@@ -1,20 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
-const baseUrl = import.meta.env.PROD 
-  ? 'https://dash-board-project-ten.vercel.app/api'
-  : 'http://localhost:5000/api';
-
-if (!baseUrl) {
-  throw new Error('VITE_API_URL environment variable is not defined');
-}
+const baseUrl = 'https://dash-board-project-ten.vercel.app/api';
 
 export const profileApi = createApi({
   reducerPath: 'profileApi',
   tagTypes: ['Profile'],
   baseQuery: fetchBaseQuery({ 
     baseUrl,
-    credentials: 'include',
+    credentials: 'same-origin',
     prepareHeaders: (headers) => {
       headers.set('Content-Type', 'application/json');
       return headers;
