@@ -10,43 +10,33 @@ const app = express();
 
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
-    ? ['https://dash-board-project-ten.vercel.app', 'https://dash-board-project-ten.vercel.app']
+    ? 'https://dash-board-project-ten.vercel.app'
     : ['http://localhost:5173', 'http://localhost:5174'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 };
 
-// Middleware
+// Enable CORS preflight for all routes
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
-
-// Add preflight handling
-app.options('*', cors(corsOptions));
 
 // Connect to MongoDB
 connectDB();
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok',
-    mongodb: connectDB().connection.readyState === 1 ? 'connected' : 'disconnected'
-  });
+// Remove /api prefix from routes since Vercel handles it
+app.get('/profiles', async (req, res) => {
+  try {
+    const profiles = await Profile.find();
+    res.json(profiles);
+  } catch (error) {
+    console.error('Fetch profiles error:', error);
+    res.status(500).json({ error: 'Failed to fetch profiles' });
+  }
 });
 
-    // API Routes
-    app.get('/api/profiles', async (req, res) => {
-      try {
-        const profiles = await Profile.find();
-        res.json(profiles);
-      } catch (error) {
-        console.error('Fetch profiles error:', error);
-        res.status(500).json({ error: 'Failed to fetch profiles' });
-      }
-    });
-
-app.post('/api/profiles', async (req, res) => {
+app.post('/profiles', async (req, res) => {
   try {
     console.log('Received profile data:', req.body);
     const newProfile = new Profile(req.body);
@@ -62,7 +52,7 @@ app.post('/api/profiles', async (req, res) => {
   }
 });
 
-app.put('/api/profiles/:id', async (req, res) => {
+app.put('/profiles/:id', async (req, res) => {
   try {
     const updatedProfile = await Profile.findByIdAndUpdate(
       req.params.id,
@@ -78,7 +68,7 @@ app.put('/api/profiles/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/profiles/:id', async (req, res) => {
+app.delete('/profiles/:id', async (req, res) => {
   try {
     await Profile.findByIdAndDelete(req.params.id);
     res.status(204).send();

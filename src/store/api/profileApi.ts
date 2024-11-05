@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
 const baseUrl = process.env.NODE_ENV === 'production'
-  ? 'https://dash-board-project-ten.vercel.app/api'
+  ? '/api'
   : 'http://localhost:5000/api';
 
 export const profileApi = createApi({
@@ -10,11 +10,15 @@ export const profileApi = createApi({
   tagTypes: ['Profile'],
   baseQuery: fetchBaseQuery({ 
     baseUrl,
-    credentials: 'include'
+    credentials: 'include',
+    prepareHeaders: (headers) => {
+      headers.set('Content-Type', 'application/json');
+      return headers;
+    }
   }),
   endpoints: (builder) => ({
     getProfiles: builder.query<ProfileFormData[], void>({
-      query: () => '/profiles',
+      query: () => 'profiles',
       providesTags: ['Profile']
     }),
     createProfile: builder.mutation<ProfileFormData, Partial<ProfileFormData>>({
