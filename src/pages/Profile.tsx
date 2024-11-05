@@ -16,7 +16,7 @@ import {
   useDeleteProfileMutation
 } from '../store/api/profileApi';
 import { ProfileTable } from '../components/profile/ProfileTable';
-import { downloadProfilePDF, downloadMultipleProfilesPDF } from '../utils/pdf';
+import { downloadMultipleProfilesPDF } from '../utils/pdf';
 
 const Profile = () => {
     const [isOpen, setIsOpen] = useState(false);
