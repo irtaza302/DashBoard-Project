@@ -11,10 +11,10 @@
     "dev:full": "concurrently \"npm run dev\" \"npm run dev:api\"",
     "build": "tsc && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --port 5173",
+    "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "seed": "node seed-data.js",
-    "vercel-build": "tsc && vite build",
+    "vercel-build": "npm run build",
     "start": "node api/server.js"
   },
   "dependencies": {
