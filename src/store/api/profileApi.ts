@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ProfileFormData } from '../../schemas/profile.schema';
 
 const baseUrl = import.meta.env.PROD 
-  ? `https://dash-board-project-${process.env.PROJECT_ID}.vercel.app/api`
+  ? 'https://dash-board-project-uoxr508z7-irtaza-maliks-projects.vercel.app/api'
   : 'http://localhost:5000/api';
 
 if (!baseUrl) {
@@ -14,6 +14,7 @@ export const profileApi = createApi({
   tagTypes: ['Profile'],
   baseQuery: fetchBaseQuery({ 
     baseUrl,
+    credentials: 'include',
     prepareHeaders: (headers) => {
       headers.set('Content-Type', 'application/json');
       return headers;
