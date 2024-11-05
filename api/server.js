@@ -17,15 +17,13 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 };
 
-// Enable CORS preflight for all routes
-app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
 connectDB();
 
-// Remove /api prefix from routes since Vercel handles it
+// API Routes without /api prefix
 app.get('/profiles', async (req, res) => {
   try {
     const profiles = await Profile.find();
