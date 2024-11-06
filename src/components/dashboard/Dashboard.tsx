@@ -22,14 +22,12 @@ const Dashboard = () => {
     {
       title: 'Total Profiles',
       value: profiles.length,
-      icon: <UsersIcon className="w-6 h-6 text-indigo-600" />,
-      trend: { value: 12, isPositive: true }
+      icon: <UsersIcon className="w-6 h-6 text-indigo-600" />
     },
     {
       title: 'Active Students',
       value: profiles.filter(p => new Date(p.expiryDate) > new Date()).length,
-      icon: <AcademicCapIcon className="w-6 h-6 text-indigo-600" />,
-      trend: { value: 8, isPositive: true }
+      icon: <AcademicCapIcon className="w-6 h-6 text-indigo-600" />
     },
     {
       title: 'Average Completion Year',
@@ -39,8 +37,7 @@ const Dashboard = () => {
     {
       title: 'Degree Types',
       value: new Set(profiles.map(p => p.education.degree)).size,
-      icon: <ChartBarIcon className="w-6 h-6 text-indigo-600" />,
-      trend: { value: 5, isPositive: true }
+      icon: <ChartBarIcon className="w-6 h-6 text-indigo-600" />
     }
   ], [profiles]);
 
