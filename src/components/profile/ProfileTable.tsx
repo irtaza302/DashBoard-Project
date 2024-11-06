@@ -13,6 +13,7 @@ import { PencilIcon, TrashIcon, DocumentArrowDownIcon, ChevronUpIcon, ChevronDow
 import { formatDate } from '../../utils/date';
 import { toast } from 'react-hot-toast';
 import { downloadProfilePDF } from '../../utils/pdf';
+import { useAuth } from '../../context/AuthContext';
 
 type SearchField = 'name' | 'email' | 'education.degree' | 'all';
 
@@ -36,6 +37,8 @@ export const ProfileTable = ({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [searchField, setSearchField] = useState<SearchField>('all');
   const [searchValue, setSearchValue] = useState(searchQuery);
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     setSearchValue(searchQuery);
@@ -146,13 +149,24 @@ export const ProfileTable = ({
       header: 'Actions',
       cell: ({ row }) => (
         <div className="flex space-x-3">
-          <button
-            onClick={() => onEdit(row.original)}
-            className="text-indigo-600 hover:text-indigo-900 transition-colors duration-150"
-            title="Edit Profile"
-          >
-            <PencilIcon className="h-5 w-5" />
-          </button>
+          {isAdmin && (
+            <>
+              <button
+                onClick={() => onEdit(row.original)}
+                className="text-indigo-600 hover:text-indigo-900 transition-colors duration-150"
+                title="Edit Profile"
+              >
+                <PencilIcon className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => onDelete(row.original)}
+                className="text-red-600 hover:text-red-900 transition-colors duration-150"
+                title="Delete Profile"
+              >
+                <TrashIcon className="h-5 w-5" />
+              </button>
+            </>
+          )}
           <button
             onClick={async () => {
               try {
@@ -167,13 +181,6 @@ export const ProfileTable = ({
             title="Download PDF"
           >
             <DocumentArrowDownIcon className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => onDelete(row.original)}
-            className="text-red-600 hover:text-red-900 transition-colors duration-150"
-            title="Delete Profile"
-          >
-            <TrashIcon className="h-5 w-5" />
           </button>
         </div>
       ),

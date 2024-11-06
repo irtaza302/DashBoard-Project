@@ -17,6 +17,7 @@ import {
 } from '../store/api/profileApi';
 import { ProfileTable } from '../components/profile/ProfileTable';
 import { downloadMultipleProfilesPDF } from '../utils/pdf';
+import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +30,9 @@ const Profile = () => {
     const [createProfile] = useCreateProfileMutation();
     const [updateProfile] = useUpdateProfileMutation();
     const [deleteProfile] = useDeleteProfileMutation();
+
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'admin';
 
     const form = useForm<ProfileFormData>({
         resolver: zodResolver(profileSchema),
@@ -178,17 +182,19 @@ const Profile = () => {
                         <DocumentArrowDownIcon className="w-5 h-5 mr-2" />
                         <span>Download All ({profiles.length})</span>
                     </button>
-                    <button
-                        onClick={() => {
-                            setEditingProfile(null);
-                            reset();
-                            setIsOpen(true);
-                        }}
-                        className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 shadow-sm hover:shadow-md"
-                    >
-                        <PlusIcon className="w-5 h-5 mr-2" />
-                        <span>{PROFILE_CONSTANTS.BUTTON_TEXT.ADD_PROFILE}</span>
-                    </button>
+                    {isAdmin && (
+                        <button
+                            onClick={() => {
+                                setEditingProfile(null);
+                                reset();
+                                setIsOpen(true);
+                            }}
+                            className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+                        >
+                            <PlusIcon className="w-5 h-5 mr-2" />
+                            <span>{PROFILE_CONSTANTS.BUTTON_TEXT.ADD_PROFILE}</span>
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -199,46 +205,51 @@ const Profile = () => {
                 onDelete={handleDeleteClick}
             />
 
-            {/* Modal Form */}
-            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-                <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" aria-hidden="true" />
-                
-                <div className="fixed inset-0 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4">
-                        <Dialog.Panel className="mx-auto w-full max-w-2xl bg-background-secondary rounded-xl shadow-xl">
-                            <div className="px-6 py-4 border-b border-gray-200">
-                                <div className="flex items-center justify-between">
-                                    <Dialog.Title className="text-xl font-semibold text-gray-900">
-                                        {editingProfile ? PROFILE_CONSTANTS.DIALOG_TITLES.EDIT : PROFILE_CONSTANTS.DIALOG_TITLES.ADD}
-                                    </Dialog.Title>
-                                    <button onClick={handleClose} className="text-gray-400 hover:text-gray-500">
-                                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
+            {isAdmin && (
+                <>
+                    {/* Modal Form */}
+                    <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+                        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" aria-hidden="true" />
+                        
+                        <div className="fixed inset-0 overflow-y-auto">
+                            <div className="flex min-h-full items-center justify-center p-4">
+                                <Dialog.Panel className="mx-auto w-full max-w-2xl bg-background-secondary rounded-xl shadow-xl">
+                                    <div className="px-6 py-4 border-b border-gray-200">
+                                        <div className="flex items-center justify-between">
+                                            <Dialog.Title className="text-xl font-semibold text-gray-900">
+                                                {editingProfile ? PROFILE_CONSTANTS.DIALOG_TITLES.EDIT : PROFILE_CONSTANTS.DIALOG_TITLES.ADD}
+                                            </Dialog.Title>
+                                            <button onClick={handleClose} className="text-gray-400 hover:text-gray-500">
+                                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <ProfileForm
+                                        form={form}
+                                        onSubmit={onSubmit}
+                                        isLoading={isLoading}
+                                        onClose={handleClose}
+                                        isEditing={!!editingProfile}
+                                    />
+                                </Dialog.Panel>
                             </div>
-                            
-                            <ProfileForm
-                                form={form}
-                                onSubmit={onSubmit}
-                                isLoading={isLoading}
-                                onClose={handleClose}
-                                isEditing={!!editingProfile}
-                            />
-                        </Dialog.Panel>
-                    </div>
-                </div>
-            </Dialog>
+                        </div>
+                    </Dialog>
 
-            <ConfirmDialog
-                isOpen={deleteConfirmOpen}
-                onClose={() => setDeleteConfirmOpen(false)}
-                onConfirm={handleDeleteConfirm}
-                title="Delete Profile"
-                message="Are you sure you want to delete this profile? This action cannot be undone."
-                isLoading={isLoading}
-            />
+                    {/* Confirm Delete Dialog */}
+                    <ConfirmDialog
+                        isOpen={deleteConfirmOpen}
+                        onClose={() => setDeleteConfirmOpen(false)}
+                        onConfirm={handleDeleteConfirm}
+                        title="Delete Profile"
+                        message="Are you sure you want to delete this profile? This action cannot be undone."
+                        isLoading={isLoading}
+                    />
+                </>
+            )}
         </div>
     );
 };

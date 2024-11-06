@@ -28,6 +28,62 @@ app.use((req, res, next) => {
 // Mount auth routes
 app.use('/api/auth', authRoutes);
 
+// Add middleware to check for admin role
+const isAdmin = (req, res, next) => {
+  try {
+    // Get user from auth context/token
+    const user = req.user;
+    if (user?.role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+};
+
+// Apply admin check to create, update, and delete routes
+app.post('/api/profiles', isAdmin, async (req, res) => {
+  try {
+    const profile = new Profile(req.body);
+    await profile.save();
+    res.status(201).json(profile);
+  } catch (error) {
+    console.error('Error creating profile:', error);
+    res.status(500).json({ error: 'Failed to create profile' });
+  }
+});
+
+app.put('/api/profiles/:id', isAdmin, async (req, res) => {
+  try {
+    const profile = await Profile.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+    res.json(profile);
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+app.delete('/api/profiles/:id', isAdmin, async (req, res) => {
+  try {
+    const profile = await Profile.findByIdAndDelete(req.params.id);
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+    res.json({ message: 'Profile deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting profile:', error);
+    res.status(500).json({ error: 'Failed to delete profile' });
+  }
+});
+
 // MongoDB connection with retry logic
 const connectDB = async (retries = 5) => {
   try {
@@ -104,54 +160,6 @@ app.get('/api/profiles/:id', async (req, res) => {
   } catch (error) {
     console.error('Error fetching profile:', error);
     res.status(500).json({ error: 'Failed to fetch profile' });
-  }
-});
-
-// POST new profile
-app.post('/api/profiles', async (req, res) => {
-  try {
-    const profile = new Profile(req.body);
-    await profile.save();
-    res.status(201).json(profile);
-  } catch (error) {
-    console.error('Error creating profile:', error);
-    res.status(500).json({ error: 'Failed to create profile' });
-  }
-});
-
-// PUT update profile
-app.put('/api/profiles/:id', async (req, res) => {
-  try {
-    console.log('Updating profile:', req.params.id);
-    const profile = await Profile.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-    if (!profile) {
-      return res.status(404).json({ error: 'Profile not found' });
-    }
-    console.log('Profile updated successfully');
-    res.json(profile);
-  } catch (error) {
-    console.error('Error updating profile:', error);
-    res.status(500).json({ error: 'Failed to update profile' });
-  }
-});
-
-// DELETE profile
-app.delete('/api/profiles/:id', async (req, res) => {
-  try {
-    console.log('Deleting profile:', req.params.id);
-    const profile = await Profile.findByIdAndDelete(req.params.id);
-    if (!profile) {
-      return res.status(404).json({ error: 'Profile not found' });
-    }
-    console.log('Profile deleted successfully');
-    res.json({ message: 'Profile deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting profile:', error);
-    res.status(500).json({ error: 'Failed to delete profile' });
   }
 });
 
