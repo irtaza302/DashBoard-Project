@@ -15,19 +15,15 @@ export const profileApi = createApi({
       headers.set('Content-Type', 'application/json');
       return headers;
     },
-    timeout: 10000, // 10 second timeout
   }),
   endpoints: (builder) => ({
     getProfiles: builder.query<ProfileFormData[], void>({
       query: () => '/profiles',
       providesTags: ['Profile'],
-      extraOptions: {
-        maxRetries: 3,
-      },
-      transformErrorResponse: (response: { status: number, data: any }) => {
-        console.error('API Error:', response);
-        return response.data?.error || 'Failed to fetch profiles';
-      },
+    }),
+    getProfile: builder.query<ProfileFormData, string>({
+      query: (id) => `/profiles/${id}`,
+      providesTags: (_, __, id) => [{ type: 'Profile', id }],
     }),
     createProfile: builder.mutation<ProfileFormData, Partial<ProfileFormData>>({
       query: (profile) => ({
@@ -35,32 +31,30 @@ export const profileApi = createApi({
         method: 'POST',
         body: profile,
       }),
-      invalidatesTags: ['Profile']
+      invalidatesTags: ['Profile'],
     }),
-    updateProfile: builder.mutation<
-      ProfileFormData, 
-      { id: string; profile: Partial<ProfileFormData> }
-    >({
+    updateProfile: builder.mutation<ProfileFormData, { id: string; profile: Partial<ProfileFormData> }>({
       query: ({ id, profile }) => ({
         url: `/profiles/${id}`,
         method: 'PUT',
         body: profile,
       }),
-      invalidatesTags: ['Profile']
+      invalidatesTags: ['Profile'],
     }),
     deleteProfile: builder.mutation<void, string>({
       query: (id) => ({
         url: `/profiles/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Profile']
+      invalidatesTags: ['Profile'],
     }),
   }),
 });
 
 export const {
   useGetProfilesQuery,
+  useGetProfileQuery,
   useCreateProfileMutation,
   useUpdateProfileMutation,
   useDeleteProfileMutation,
-} = profileApi; 
+} = profileApi;

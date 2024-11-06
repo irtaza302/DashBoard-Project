@@ -1,5 +1,4 @@
 import React from 'react';
-import { useRouteError} from 'react-router-dom';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 
 interface Props {
@@ -45,15 +44,7 @@ interface ErrorFallbackProps {
 }
 
 const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error }) => {
-  const routeError = useRouteError() as Error | Response | null;
   const errorMessage = error?.message || 'Something went wrong';
-
-  const getErrorMessage = (error: Error | Response | null): string => {
-    if (!error) return 'Unknown error occurred';
-    if (error instanceof Response) return `${error.status} ${error.statusText}`;
-    if (error instanceof Error) return error.message;
-    return 'Unknown error occurred';
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -65,14 +56,6 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error }) => {
         
         <div className="space-y-4">
           <p className="text-gray-600">{errorMessage}</p>
-          
-          {routeError && (
-            <div className="bg-red-50 p-4 rounded-md">
-              <p className="text-sm text-red-700">
-                Route Error: {getErrorMessage(routeError)}
-              </p>
-            </div>
-          )}
           
           <div className="pt-4 border-t border-gray-200">
             <button

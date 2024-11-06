@@ -45,4 +45,43 @@ body {
 
 .react-tel-input .country-list .search-box {
   @apply !text-sm !px-3 !py-2 !border !border-gray-300 !rounded-md !w-full;
+}
+
+/* Custom select styles */
+.select-container {
+  @apply relative inline-block;
+}
+
+.select-container select {
+  @apply appearance-none bg-white border border-gray-300 rounded-lg py-2 pl-3 pr-10 text-sm leading-5;
+}
+
+.select-container select:focus {
+  @apply outline-none ring-2 ring-indigo-500/20 border-indigo-500;
+}
+
+.select-icon {
+  @apply pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400;
+}
+
+/* Search input styles */
+.search-input {
+  @apply px-4 py-2 border border-gray-300 rounded-lg text-sm;
+}
+
+.search-input:focus {
+  @apply outline-none ring-2 ring-indigo-500/20 border-indigo-500;
+}
+
+/* Combined search field styles */
+.search-field-group {
+  @apply flex items-center;
+}
+
+.search-field-group select {
+  @apply rounded-r-none border-r-0;
+}
+
+.search-field-group input {
+  @apply rounded-l-none;
 } 

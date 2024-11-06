@@ -23,7 +23,7 @@ const Profile = () => {
     const [editingProfile, setEditingProfile] = useState<ProfileFormData | null>(null);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [profileToDelete, setProfileToDelete] = useState<ProfileFormData | null>(null);
-    const [search, setSearch] = useState('');
+    const [search] = useState('');
 
     const { data: profiles = [], isLoading } = useGetProfilesQuery();
     const [createProfile] = useCreateProfileMutation();
@@ -197,8 +197,6 @@ const Profile = () => {
                 data={filteredProfiles}
                 onEdit={handleEdit}
                 onDelete={handleDeleteClick}
-                searchQuery={search}
-                onSearchChange={setSearch}
             />
 
             {/* Modal Form */}

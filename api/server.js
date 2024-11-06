@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 
@@ -69,24 +73,33 @@ const profileSchema = new mongoose.Schema({
 
 const Profile = mongoose.model('Profile', profileSchema);
 
-// GET all profiles with error handling
+// GET all profiles
 app.get('/api/profiles', async (req, res) => {
   try {
-    // Check MongoDB connection
     if (mongoose.connection.readyState !== 1) {
       await connectDB();
     }
-
     console.log('Fetching profiles...');
     const profiles = await Profile.find();
     console.log(`Found ${profiles.length} profiles`);
     res.json(profiles);
   } catch (error) {
     console.error('Error in GET /api/profiles:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch profiles',
-      details: error.message 
-    });
+    res.status(500).json({ error: 'Failed to fetch profiles' });
+  }
+});
+
+// GET single profile
+app.get('/api/profiles/:id', async (req, res) => {
+  try {
+    const profile = await Profile.findById(req.params.id);
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+    res.json(profile);
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
   }
 });
 
@@ -98,10 +111,43 @@ app.post('/api/profiles', async (req, res) => {
     res.status(201).json(profile);
   } catch (error) {
     console.error('Error creating profile:', error);
-    res.status(500).json({ 
-      error: 'Failed to create profile',
-      details: error.message 
-    });
+    res.status(500).json({ error: 'Failed to create profile' });
+  }
+});
+
+// PUT update profile
+app.put('/api/profiles/:id', async (req, res) => {
+  try {
+    console.log('Updating profile:', req.params.id);
+    const profile = await Profile.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+    console.log('Profile updated successfully');
+    res.json(profile);
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+// DELETE profile
+app.delete('/api/profiles/:id', async (req, res) => {
+  try {
+    console.log('Deleting profile:', req.params.id);
+    const profile = await Profile.findByIdAndDelete(req.params.id);
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+    console.log('Profile deleted successfully');
+    res.json({ message: 'Profile deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting profile:', error);
+    res.status(500).json({ error: 'Failed to delete profile' });
   }
 });
 
@@ -125,6 +171,12 @@ app.use((err, req, res, next) => {
 // Handle 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 export default app;
