@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { loginSchema } from '../../schemas/auth.schema';
+import { AUTH_CONSTANTS } from '../../constants/auth.constants';
 import { EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 
@@ -25,18 +26,22 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors }
   } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema)
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: import.meta.env.DEV ? AUTH_CONSTANTS.DEFAULT_ADMIN.EMAIL : '',
+      password: import.meta.env.DEV ? AUTH_CONSTANTS.DEFAULT_ADMIN.PASSWORD : ''
+    }
   });
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
-      login(data.email);
-      toast.success('Login successful');
+      await login(data.email, data.password);
+      toast.success(AUTH_CONSTANTS.MESSAGES.LOGIN_SUCCESS);
       navigate(from, { replace: true });
     } catch (error: unknown) {
       console.error('Login error:', error);
-      toast.error('Login failed');
+      toast.error(AUTH_CONSTANTS.MESSAGES.LOGIN_FAILED);
     } finally {
       setIsLoading(false);
     }

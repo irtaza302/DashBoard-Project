@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import authRoutes from './routes/auth.js';
 
 // Load environment variables
 dotenv.config();
@@ -23,6 +24,9 @@ app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
 });
+
+// Mount auth routes
+app.use('/api/auth', authRoutes);
 
 // MongoDB connection with retry logic
 const connectDB = async (retries = 5) => {

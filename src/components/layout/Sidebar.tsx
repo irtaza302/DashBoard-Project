@@ -23,6 +23,11 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  // Filter routes based on user role
+  const filteredRoutes = ROUTES.filter(route => 
+    !route.adminOnly || (route.adminOnly && user?.role === 'admin')
+  );
+
   return (
     <motion.div
       initial={false}
@@ -46,18 +51,15 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
           </AnimatePresence>
           <button
             onClick={onToggle}
-            className={`p-2 rounded-lg hover:bg-background/80 text-foreground-secondary ${UI_CONSTANTS.TRANSITIONS.DEFAULT} ${
-              !isOpen ? 'w-full flex justify-center' : ''
-            }`}
-            aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            className={`p-2 rounded-lg hover:bg-background/80 text-foreground-secondary ${UI_CONSTANTS.TRANSITIONS.DEFAULT}`}
           >
-            <Bars3Icon className={`${UI_CONSTANTS.ICONS.SIZE.DEFAULT} hover:scale-110 ${UI_CONSTANTS.TRANSITIONS.DEFAULT}`} />
+            <Bars3Icon className="w-5 h-5" />
           </button>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 space-y-1 p-2 overflow-y-auto">
-          {ROUTES.map((route) => (
+          {filteredRoutes.map((route) => (
             <Link
               key={route.path}
               to={route.path}
@@ -70,7 +72,6 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
                   ? 'bg-primary-600 text-white shadow-md'
                   : 'text-foreground-secondary hover:bg-background/80'
               }`}
-              title={!isOpen ? route.label : undefined}
             >
               <div className={`w-5 h-5 transition-transform duration-200 ${
                 isHovered === route.path ? 'scale-110' : ''
@@ -106,8 +107,13 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
                   className="flex-1 min-w-0"
                 >
                   <p className="text-sm font-medium text-foreground truncate">
-                    {user}
+                    {user?.email}
                   </p>
+                  {user?.role && (
+                    <p className="text-xs text-foreground-secondary capitalize">
+                      {user.role}
+                    </p>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
