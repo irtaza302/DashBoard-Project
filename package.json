@@ -15,7 +15,8 @@
     "typecheck": "tsc --noEmit",
     "seed": "node seed-data.js",
     "vercel-build": "npm run build",
-    "start": "node api/server.js"
+    "start": "node api/server.js",
+    "seed:admin": "node scripts/seed-admin.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
@@ -27,6 +28,7 @@
     "@tanstack/react-table": "^8.20.5",
     "@types/react-pdf": "^6.2.0",
     "axios": "^1.6.7",
+    "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
@@ -34,6 +36,7 @@
     "express": "^4.21.1",
     "file-saver": "^2.0.5",
     "framer-motion": "^11.0.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

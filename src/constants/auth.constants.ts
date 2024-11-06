@@ -10,9 +10,11 @@ export const AUTH_CONSTANTS = {
   MESSAGES: {
     LOGIN_SUCCESS: 'Login successful',
     LOGIN_FAILED: 'Login failed',
+    LOGIN_ERROR: 'Invalid credentials',
     INVALID_CREDENTIALS: 'Invalid email or password',
     NETWORK_ERROR: 'Network error. Please try again',
     SESSION_EXPIRED: 'Your session has expired. Please login again',
+    LOGOUT_SUCCESS: 'Logged out successfully'
   },
 
   VALIDATION: {
@@ -68,6 +70,11 @@ export const AUTH_CONSTANTS = {
     EXPIRY_TIME: 3600, // in seconds
     REFRESH_THRESHOLD: 300, // refresh token 5 minutes before expiry
   },
+
+  DEFAULT_ADMIN: {
+    EMAIL: 'tester@test.com',
+    PASSWORD: 'aCd3@W62'
+  }
 } as const;
 
 export const SECURITY_FEATURES = [
