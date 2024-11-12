@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { loginSchema } from '../../schemas/auth.schema';
 import { AUTH_CONSTANTS } from '../../constants/auth.constants';
-import { EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 
 interface LoginFormData {
@@ -16,6 +16,7 @@ interface LoginFormData {
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/dashboard';
@@ -37,7 +38,6 @@ const LoginForm = () => {
     try {
       setIsLoading(true);
       await login(data.email, data.password);
-      toast.success(AUTH_CONSTANTS.MESSAGES.LOGIN_SUCCESS);
       navigate(from, { replace: true });
     } catch (error: unknown) {
       console.error('Login error:', error);
@@ -107,10 +107,21 @@ const LoginForm = () => {
                     </div>
                     <input
                       {...register('password')}
-                      type="password"
-                      className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors text-gray-900"
+                      type={showPassword ? 'text' : 'password'}
+                      className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors text-gray-900"
                       placeholder="••••••••"
                     />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <EyeIcon className="h-5 w-5 text-gray-400" />
+                      )}
+                    </button>
                   </div>
                   {errors.password && (
                     <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
